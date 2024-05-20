@@ -64,6 +64,7 @@ const CreateAnak = () => {
                 saran : '-',
                 id_kader: localStorage.getItem('id_user'),
                 usia : 0,
+                bulan_ke : 1,
             }
             console.log(dataPenimbangan);
            axios.post('http://127.0.0.1:8000/api/createPenimbangan', dataPenimbangan)
@@ -97,7 +98,8 @@ const CreateAnak = () => {
             >
                 <h3>Tambah Data Anak</h3>
             </Box>
-            <form onSubmit={handleSubmit(onSubmit)}>
+
+           <form onSubmit={handleSubmit(onSubmit)}>
 
 
             

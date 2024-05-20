@@ -2,7 +2,6 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { Stack } from '@mui/material';
 import "react-datepicker/dist/react-datepicker.css";
-import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -22,7 +21,6 @@ import dayjs from 'dayjs';
 import { useState, useEffect } from 'react';
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout"
 import DashboardNavbar from "examples/Navbars/DashboardNavbar"
-import data from 'layouts/tables/data/authorsTableData';
 
 const EditAnak = () => {
 

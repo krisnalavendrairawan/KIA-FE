@@ -49,11 +49,12 @@ import LogOut from "layouts/authentication/log-out";
 import Anak from "layouts/anak";
 import CreateAnak from "layouts/anak/create";
 import EditAnak from "layouts/anak/edit";
+import Penimbangan from "layouts/penimbangan";
+import CreatePenimbangan from "layouts/penimbangan/create";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
 import KaderLogin from "layouts/auth/login/kaderLogin";
-import Penimbangan from "layouts/penimbangan";
 
 const routes = [
   {
@@ -129,6 +130,13 @@ const routes = [
     icon: <Icon fontSize="small">assignment</Icon>,
     route: "/penimbangan",
     component: <Penimbangan />,
+  },
+  {
+    type: "divider",
+    name : "create-penimbangan",
+    key : "create-penimbangan",
+    route : "/penimbangan/create",
+    component : <CreatePenimbangan />,
   },
 
   {
