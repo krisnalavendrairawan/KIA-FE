@@ -64,7 +64,7 @@ const CreateAnak = () => {
                 saran : '-',
                 id_kader: localStorage.getItem('id_user'),
                 usia : 0,
-                bulan_ke : 1,
+                bulan_ke : 0,
             }
             console.log(dataPenimbangan);
            axios.post('http://127.0.0.1:8000/api/createPenimbangan', dataPenimbangan)

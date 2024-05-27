@@ -35,15 +35,19 @@ const EditPenimbangan = ({ open, handleClose, selectedId }) => {
 
     const { control, handleSubmit, reset, watch, setValue } = useForm();
 
-    useEffect(() => {
-        const fetchData = async () => {
-            if (selectedId) {
-                setLoading(true);
-                try {
-                    const response = await axios.get(`http://127.0.0.1:8000/api/getPenimbanganById/${selectedId}`);
-                    setDataAnak(response.data.penimbangan);
-                    setNikAnak(response.data.penimbangan.nik_anak);
-                    setPreviousMonth(response.data.penimbangan.usia);
+useEffect(() => {
+    const fetchData = async () => {
+        if (selectedId) {
+            setLoading(true);
+            console.log('selectedId:', selectedId);
+            try {
+                const response = await axios.get(`http://127.0.0.1:8000/api/getPenimbanganById/${selectedId}`);
+                setDataAnak(response.data.penimbangan);
+                setNikAnak(response.data.penimbangan.nik_anak);
+                setPreviousMonth(response.data.penimbangan.usia);
+
+                // Penambahan pengecekan untuk memastikan objek response.data.penimbangan tidak null
+                if (response.data.penimbangan) {
                     axios.get(`http://127.0.0.1:8000/api/getPenimbanganByNik/${response.data.penimbangan.nik_anak}`)
                         .then((response) => {
                             const data = response.data.penimbangan;
@@ -61,16 +65,19 @@ const EditPenimbangan = ({ open, handleClose, selectedId }) => {
                         .catch((error) => {
                             console.log(error);
                         });
-                } catch (error) {
-                    console.error(error);
-                } finally {
-                    setLoading(false);
+                } else {
+                    console.log('Penimbangan data is null');
                 }
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setLoading(false);
             }
-        };
+        }
+    };
 
-        fetchData();
-    }, [selectedId, open]);
+    fetchData();
+}, [selectedId, open]);
 
     useEffect(() => {
         if (!open) {
@@ -166,7 +173,7 @@ const EditPenimbangan = ({ open, handleClose, selectedId }) => {
                             <Controller
                                 name="tgl_penimbangan"
                                 control={control}
-                                defaultValue={dayjs(dataAnak.tgl_penimbangan)}
+                                defaultValue={dayjs(dataAnak?.tgl_penimbangan)}
                                 render={({ field }) => (
                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                                         <DemoContainer components={['DatePicker']}>
@@ -179,7 +186,7 @@ const EditPenimbangan = ({ open, handleClose, selectedId }) => {
                                 <Controller
                                     name="usia"
                                     control={control}
-                                    defaultValue={dataAnak.usia}
+                                    defaultValue={dataAnak?.usia}
                                     render={({ field }) => <TextField fullWidth {...field} label="Usia" variant="outlined" type='number' InputProps={{
                                         startAdornment: <InputAdornment position="start">bulan</InputAdornment>,
                                     }} />}
@@ -190,7 +197,7 @@ const EditPenimbangan = ({ open, handleClose, selectedId }) => {
                             <Controller
                                 name="berat_badan"
                                 control={control}
-                                defaultValue={dataAnak.berat_badan}
+                                defaultValue={dataAnak?.berat_badan}
                                 render={({ field }) => (
                                     <TextField
                                         fullWidth
@@ -209,7 +216,7 @@ const EditPenimbangan = ({ open, handleClose, selectedId }) => {
                             <Controller
                                 name="tinggi_badan"
                                 control={control}
-                                defaultValue={dataAnak.tinggi_badan}
+                                defaultValue={dataAnak?.tinggi_badan}
                                 render={({ field }) => (
                                     <TextField
                                         fullWidth
@@ -231,16 +238,16 @@ const EditPenimbangan = ({ open, handleClose, selectedId }) => {
                             alignItems="center"
                             gap={2}
                             >                           
-                            <Grid item xs={8} md={6}>
+                            <Grid item xs={8} md={4}>
                             <Controller
                                 name="keterangan"
                                 control={control}
-                                defaultValue={dataAnak.keterangan}
+                                defaultValue={dataAnak?.keterangan}
                                 render={({ field }) => <TextField fullWidth {...field} label="Keterangan" variant="outlined" disabled />}
                             />
                             </Grid>
-                            <Grid item xs={8} md={4}>
-                            <Button variant="contained" color="success" id="btn-hitung-gizi"  onClick={handleCalculateWeightGain}>
+                            <Grid item xs={8} md={6}>
+                            <Button variant="contained" color="success" id="warning-button"  onClick={handleCalculateWeightGain}>
                                 Hitung Kenaikan
                             </Button>
                             </Grid>
@@ -254,19 +261,19 @@ const EditPenimbangan = ({ open, handleClose, selectedId }) => {
                             alignItems="center"
                             gap={2}
                             >
-                             <Grid item xs={8} md={6}>
+                             <Grid item xs={8} md={4}>
                             
                             <Controller
                                 name="status_gizi"
                                 control={control}
-                                defaultValue={dataAnak.status_gizi}
+                                defaultValue={dataAnak?.status_gizi}
                                 render={({ field }) => <TextField fullWidth disabled {...field} label="Status Gizi" variant="outlined" />}
                                 
                             />
                             </Grid>  
-                            <Grid item xs={8} md={4}>
+                            <Grid item xs={8} md={6}>
                                
-                                <Button variant="contained" color="success" id="btn-hitung-gizi" onClick={handleCalculateGizi}>
+                                <Button variant="contained" color="success" id="warning-button" onClick={handleCalculateGizi}>
                                     Hitung Status Gizi
                                 </Button>
                             </Grid> 
@@ -274,7 +281,7 @@ const EditPenimbangan = ({ open, handleClose, selectedId }) => {
                             <Controller
                                 name="saran"
                                 control={control}
-                                defaultValue={dataAnak.saran}
+                                defaultValue={dataAnak?.saran}
                                 render={({ field }) =>
                                     <TextField
                                         fullWidth

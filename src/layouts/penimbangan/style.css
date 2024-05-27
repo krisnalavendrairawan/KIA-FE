@@ -1,17 +1,29 @@
-#btn-cari-anak {
-    background-color: #4CAF50;
+#create-button {
+    /* text color white */
     color: white;
-    padding: 14px 20px;
-    border: none;
-    cursor: pointer;
-    width: 10%;
-    opacity: 0.9;
+    /* background color blue */
+    background-color: #007bff;
 }
 
-#btn-hitung-gizi {
-    background-color: #4CAF50;
+#save-button {
+    /* text color white */
     color: white;
-    padding: 14px 20px;
+    /* background color green */
+    background-color: #28a745;
+}
+
+#back-button {
+    /* text color white */
+    color: white;
+    /* background color red */
+    background-color: #dc3545;
+}
+
+#warning-button {
+    /* text color white */
+    color: white;
+    /* background color yellow */
+    background-color: #f7b731;
     margin: 10px 0;
     border: none;
     cursor: pointer;
@@ -19,13 +31,14 @@
     opacity: 0.9;
 }
 
-#btn-hitung-usia {
-    background-color: #4CAF50;
-    color: white;
-    padding: 14px 20px;
-    margin: 10px 0;
-    border: none;
-    cursor: pointer;
-    width: auto;
-    opacity: 0.9;
+#edit-button {
+    /* text color white */
+    color: #f7b731;
+}
+
+#delete-button {
+    /* text color white */
+    color: #dc3545;
+    /* background color red
+    background-color: #dc3545; */
 }

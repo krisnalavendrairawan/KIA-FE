@@ -37,7 +37,7 @@ const Penimbangan = () => {
             .then((response) => {
                 const dataWithIds = response.data.penimbangan.map((row, index) => ({
                     ...row,
-                    id: index + 1,
+                    id: row.id_penimbangan,
                     nama_anak: row.anak ? row.anak.nama_anak : '',
                     berat_badan: row.berat_badan ? row.berat_badan + " kg" : '',
                     tinggi_badan: row.tinggi_badan ? row.tinggi_badan + " cm" : ''
@@ -84,10 +84,10 @@ const Penimbangan = () => {
                         <Button onClick={() => handleView(params.row.id)} startIcon={<Visibility />} color="primary">
                             View
                         </Button>
-                        <Button onClick={() => handleEdit(params.row.id)} startIcon={<Edit />} color="secondary">
+                        <Button id="edit-button" onClick={() => handleEdit(params.row.id)} startIcon={<Edit />} color="secondary">
                             Edit
                         </Button>
-                        <Button onClick={() => handleDelete(params.row.id)} startIcon={<Delete />} color="error">
+                        <Button id="delete-button" onClick={() => handleDelete(params.row.id)} startIcon={<Delete />} color="error">
                             Delete
                         </Button>
                     </div>
@@ -106,7 +106,7 @@ const Penimbangan = () => {
         <DashboardLayout>
             <DashboardNavbar />
             <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
-                <Button variant="contained" color="primary" onClick={handleCreatePenimbangan}>Create Penimbangan</Button>
+                <Button variant="contained" id="create-button" color="primary" onClick={handleCreatePenimbangan}>Create Penimbangan</Button>
             </Box>
             {loading ? (
                 'Loading...'

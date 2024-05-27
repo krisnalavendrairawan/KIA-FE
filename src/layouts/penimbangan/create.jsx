@@ -1,25 +1,13 @@
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout"
 import DashboardNavbar from "examples/Navbars/DashboardNavbar"
 import axios from "axios"
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import { Stack } from '@mui/material';
 import "react-datepicker/dist/react-datepicker.css";
-import Grid from '@mui/material/Grid';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Typography from '@mui/material/Typography';
-import { CardActionArea } from '@mui/material';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import Autocomplete from '@mui/material/Autocomplete';
-import InputAdornment from '@mui/material/InputAdornment';
+import { Card, CardActionArea, CardMedia, CardContent, Grid,Typography, Stack, TextField, Box, Autocomplete,InputAdornment, Button } from '@mui/material';
+
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import Button from '@mui/material/Button';
 import { useForm, Controller, SubmitHandler, set } from "react-hook-form"
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
@@ -68,11 +56,25 @@ const CreatePenimbangan = () => {
             
             console.log(formData);
             
-            const result = await axios.post('http://localhost:8000/api/createPenimbangan', formData);
+            const result = await axios.post('http://localhost:8000/api/createPenimbangan', formData)
+            .then(res => {
+                console.log(res.data);
+                //update umur anak
+                const umur = data.usia;
+                const nik = data.nik_anak;
+
+                axios.patch(`http://localhost:8000/api/updateUmur/${nik}?umur=${umur}`)
+
+                // console.log(result.data);
+                alert('Data berhasil ditambahkan');
+                navigate('/penimbangan')
+
+            })
+            .catch(error => {
+                console.error('Error adding data:', error);
+            });
             
-            console.log(result.data);
-            alert('Data berhasil ditambahkan');
-            navigate('/penimbangan')
+
         } catch (error) {
             console.error('Error fetching or adding data:', error);
         }
@@ -227,7 +229,7 @@ const CreatePenimbangan = () => {
                           Umur
                         </Typography>
                         <Typography variant="body1" color="text.secondary">
-                          {previousMonth} bulan
+                          {selectedAnak.umur} bulan
                         </Typography>
                       </Grid>
                       <Grid item xs={6}>
@@ -297,7 +299,7 @@ const CreatePenimbangan = () => {
                                 size="small"
                                 variant="contained" 
                                 color="success" 
-                                id="btn-hitung-usia" 
+                                id="warning-button" 
                                 onClick={isUsiaEnabled ? handleDisableUsiaField : handleEnableUsiaField}
                             >
                                 {isUsiaEnabled ? 'Disabled' : 'Enabled'}
@@ -345,7 +347,7 @@ const CreatePenimbangan = () => {
                                 defaultValue=""
                                 render={({ field }) => <TextField fullWidth {...field} label="Keterangan" variant="outlined" disabled/>}
                             />
-                            <Button variant="contained" color="success" id="btn-hitung-gizi" onClick={handleCalculateWeightGain}>
+                            <Button variant="contained" color="success" id="warning-button" onClick={handleCalculateWeightGain}>
                                 Hitung Kenaikan
                             </Button>
                         </Box>
@@ -361,7 +363,7 @@ const CreatePenimbangan = () => {
                                 defaultValue=""
                                 render={({ field }) => <TextField fullWidth {...field} label="Status Gizi" variant="outlined" />}
                             />
-                            <Button variant="contained" color="success" id="btn-hitung-gizi" onClick={handleCalculateGizi}>
+                            <Button variant="contained" color="success" id="warning-button" onClick={handleCalculateGizi}>
                                 Hitung Status Gizi
                             </Button>
                         </Box>
@@ -396,14 +398,14 @@ const CreatePenimbangan = () => {
                 
                             <Grid container spacing={2}>
                                 <Grid item>
-                                <Button variant="contained" id='btn-back'
+                                <Button variant="contained" id='back-button'
                                     href="/anak"
                                 >
                                     Kembali
                                 </Button>
                                 </Grid>
                                 <Grid item>
-                                <Button variant="contained" id='btn-add-data-anak' type='submit'>
+                                <Button variant="contained" id='save-button' type='submit'>
                                     Tambah Data Anak
                                 </Button>
                                 </Grid>

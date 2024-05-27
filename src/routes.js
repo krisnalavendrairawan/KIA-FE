@@ -51,6 +51,8 @@ import CreateAnak from "layouts/anak/create";
 import EditAnak from "layouts/anak/edit";
 import Penimbangan from "layouts/penimbangan";
 import CreatePenimbangan from "layouts/penimbangan/create";
+import Imunisasi from "layouts/imunisasi";
+import CreateImunisasi from "layouts/imunisasi/create";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -131,6 +133,24 @@ const routes = [
     route: "/penimbangan",
     component: <Penimbangan />,
   },
+  {
+    type: "collapse",
+    name : "Imunisasi",
+    key : "imunisasi",
+    icon : <Icon fontSize="small">assignment</Icon>,
+    route : "/imunisasi",
+    component : <Imunisasi />,
+  },
+
+  {
+    type: "divider",
+    name : "create-imunisasi",  
+    key : "create-imunisasi",
+    route : "/imunisasi/create",
+    component : <CreateImunisasi />,
+
+  },
+
   {
     type: "divider",
     name : "create-penimbangan",
