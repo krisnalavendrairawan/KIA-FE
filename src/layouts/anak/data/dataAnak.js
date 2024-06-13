@@ -38,7 +38,12 @@ export default function DataAnak() {
       if (result.isConfirmed) {
         // Jika pengguna mengonfirmasi penghapusan
         console.log(`Delete button clicked for NIK: ${nik}`);
-        axios.delete(`http://127.0.0.1:8000/api/deleteAnak/${nik}`)
+        axios.delete(`http://127.0.0.1:8000/api/deleteUser/${nik}`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        
+        })
           .then((response) => {
             // Tampilkan pesan sukses jika diperlukan
             Swal.fire('Sukses!', 'Data anak berhasil dihapus.', 'success');

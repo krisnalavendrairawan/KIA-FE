@@ -42,6 +42,9 @@ useEffect(() => {
             console.log('selectedId:', selectedId);
             try {
                 const response = await axios.get(`http://127.0.0.1:8000/api/getPenimbanganById/${selectedId}`);
+                console.log('response:', response);
+                //console log tanggal penimbangan
+                console.log('tgl_penimbangan:', response.data.penimbangan.tgl_penimbangan);
                 setDataAnak(response.data.penimbangan);
                 setNikAnak(response.data.penimbangan.nik_anak);
                 setPreviousMonth(response.data.penimbangan.usia);

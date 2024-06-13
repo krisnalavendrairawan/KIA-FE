@@ -1,6 +1,7 @@
 import { useState } from "react";
 const logOut = () => {
-  localStorage.removeItem('token');
+  localStorage.removeItem('token', 'id_user', 'user');
+
   window.location.href = '/authentication/sign-in';
 };
 

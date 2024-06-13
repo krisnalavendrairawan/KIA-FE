@@ -46,6 +46,7 @@ import SignIn from "layouts/authentication/sign-in";
 import SignInBidan from "layouts/authentication/sign-in/bidan";
 import SignUp from "layouts/authentication/sign-up";
 import LogOut from "layouts/authentication/log-out";
+import User from "layouts/user";
 import Anak from "layouts/anak";
 import CreateAnak from "layouts/anak/create";
 import EditAnak from "layouts/anak/edit";
@@ -115,14 +116,12 @@ const routes = [
     route: "/authentication/sign-in",
     component: <SignIn />,
   },
-
   {
-    type: "collapse",
-    name: "Daftar Anak",
-    key: "anak",
-    icon: <Icon fontSize="small">assignment</Icon>,
-    route: "/anak",
-    component: <Anak />,
+    type: "divider",
+    name : "create-penimbangan",
+    key : "create-penimbangan",
+    route : "/penimbangan/create",
+    component : <CreatePenimbangan />,
   },
 
   {
@@ -151,21 +150,14 @@ const routes = [
 
   },
 
-  {
-    type: "divider",
-    name : "create-penimbangan",
-    key : "create-penimbangan",
-    route : "/penimbangan/create",
-    component : <CreatePenimbangan />,
-  },
 
   {
     type: "collapse",
-    name: "Log Out",
-    key: "log-out",
-    icon: <Icon fontSize="small">logout</Icon>,
-    route: "/authentication/log-out",
-    component: <LogOut />,
+    name: "Daftar Anak",
+    key: "anak",
+    icon: <Icon fontSize="small">assignment</Icon>,
+    route: "/anak",
+    component: <Anak />,
   },
 
   {
@@ -182,9 +174,18 @@ const routes = [
     component: <EditAnak />,
 
   },
+
+  {
+    type: "collapse",
+    name: "Daftar User",
+    key: "user",
+    icon: <Icon fontSize="small">user</Icon>,
+    route: "/user",
+    component: <User />,
+  },
   
   {
-    name: "Login Bidan",
+    name: "Login Kader",
     key: "login-kader",
     route: "/login-kader",
     component: <KaderLogin />,
@@ -204,6 +205,15 @@ const routes = [
     // icon: <Icon fontSize="small">assignment</Icon>,
     route: "/authentication/sign-up",
     component: <SignUp />,
+  },
+
+  {
+    type: "collapse",
+    name: "Log Out",
+    key: "log-out",
+    icon: <Icon fontSize="small">logout</Icon>,
+    route: "/authentication/log-out",
+    component: <LogOut />,
   },
 ];
 

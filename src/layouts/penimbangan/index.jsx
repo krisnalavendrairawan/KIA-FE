@@ -9,6 +9,8 @@ import { Button } from '@mui/material';
 import { Edit, Visibility, Delete } from '@mui/icons-material';
 import EditPenimbanganModal from './modal/edit'; // Import EditPenimbanganModal component
 
+import useDeleteData from "hooks/useDelete"; // Import useDeleteData custom hook
+
 const VISIBLE_FIELDS = [
     'tgl_penimbangan',
     'nik_anak',
@@ -27,6 +29,8 @@ const Penimbangan = () => {
     const navigate = useNavigate();
     const [openEditDialog, setOpenEditDialog] = useState(false);
     const [selectedId, setSelectedId] = useState(null);
+
+    const { loading: deleteLoading, error: deleteError, deleteData } = useDeleteData("http://127.0.0.1:8000/api/deletePenimbangan");
 
     useEffect(() => {
         fetchDataPenimbangan();
@@ -56,12 +60,14 @@ const Penimbangan = () => {
     };
 
     const handleEdit = (id) => {
+        console.log("Edit action for row id:", id);
         setSelectedId(id);
         setOpenEditDialog(true);
     };
 
-    const handleDelete = (id) => {
+    const handleDelete = async (id) => {
         console.log("Delete action for row id:", id);
+        await deleteData(id, setDataPenimbangan);
     };
 
     const handleCreatePenimbangan = () => {
@@ -74,11 +80,13 @@ const Penimbangan = () => {
                 field,
                 headerName: field.replace('_', ' ').toUpperCase(),
                 flex: 1,
+                minWidth: 150
             })),
             {
                 field: 'actions',
                 headerName: 'Actions',
                 flex: 0.5,
+                minWidth: 350,
                 renderCell: (params) => (
                     <div>
                         <Button onClick={() => handleView(params.row.id)} startIcon={<Visibility />} color="primary">
@@ -98,7 +106,6 @@ const Penimbangan = () => {
 
     const handleCloseEditModal = () => {
         setOpenEditDialog(false);
-        // Update data after successful edit
         fetchDataPenimbangan();
     };
 
