@@ -47,6 +47,7 @@ import SignInBidan from "layouts/authentication/sign-in/bidan";
 import SignUp from "layouts/authentication/sign-up";
 import LogOut from "layouts/authentication/log-out";
 import User from "layouts/user";
+import CreateUser from "layouts/user/create";
 import Anak from "layouts/anak";
 import CreateAnak from "layouts/anak/create";
 import EditAnak from "layouts/anak/edit";
@@ -108,14 +109,18 @@ const routes = [
     route: "/profile",
     component: <Profile />,
   },
+
+        //Sign In
   {
     // type: "collapse",
     name: "Sign In",
     key: "sign-in",
-    // icon: <Icon fontSize="small">login</Icon>,
+    // icon: <Icon fontSize="small">login</Icon>, 
     route: "/authentication/sign-in",
     component: <SignIn />,
   },
+
+        //Penimbangan
   {
     type: "divider",
     name : "create-penimbangan",
@@ -132,6 +137,8 @@ const routes = [
     route: "/penimbangan",
     component: <Penimbangan />,
   },
+
+        //Imunisasi
   {
     type: "collapse",
     name : "Imunisasi",
@@ -150,6 +157,7 @@ const routes = [
 
   },
 
+        //Anak
 
   {
     type: "collapse",
@@ -175,6 +183,8 @@ const routes = [
 
   },
 
+          //User
+
   {
     type: "collapse",
     name: "Daftar User",
@@ -183,7 +193,22 @@ const routes = [
     route: "/user",
     component: <User />,
   },
-  
+
+  {
+    name: "create-user",
+    key: "create-user",
+    route: "/user/create",
+    component: <CreateUser />,
+  },
+
+  {
+    name: "edit-user",
+    key: "edit-user",
+    route: "/user/edit/:nik",
+    // component: <EditUser />,
+  },
+
+        //Login
   {
     name: "Login Kader",
     key: "login-kader",
@@ -199,13 +224,15 @@ const routes = [
   },
 
   {
-    // type: "collapse",
+    type: "divider",
     name: "Sign Up",
     key: "sign-up",
     // icon: <Icon fontSize="small">assignment</Icon>,
     route: "/authentication/sign-up",
     component: <SignUp />,
   },
+
+        //Log Out
 
   {
     type: "collapse",
@@ -215,6 +242,10 @@ const routes = [
     route: "/authentication/log-out",
     component: <LogOut />,
   },
+
+  {
+    type: "divider",
+  }
 ];
 
 export default routes;
