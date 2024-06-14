@@ -48,6 +48,7 @@ import SignUp from "layouts/authentication/sign-up";
 import LogOut from "layouts/authentication/log-out";
 import User from "layouts/user";
 import CreateUser from "layouts/user/create";
+import EditUser from "layouts/user/edit";
 import Anak from "layouts/anak";
 import CreateAnak from "layouts/anak/create";
 import EditAnak from "layouts/anak/edit";
@@ -58,7 +59,13 @@ import CreateImunisasi from "layouts/imunisasi/create";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
+import GroupIcon from '@mui/icons-material/Group';
+import EscalatorWarningIcon from '@mui/icons-material/EscalatorWarning';
 import KaderLogin from "layouts/auth/login/kaderLogin";
+import ScaleIcon from '@mui/icons-material/Scale';
+import MedicalInformationIcon from '@mui/icons-material/MedicalInformation';
+import VaccinesIcon from '@mui/icons-material/Vaccines';
+import icon from "assets/theme/components/icon";
 
 const routes = [
   {
@@ -133,7 +140,7 @@ const routes = [
     type: "collapse",
     name: "Penimbangan",
     key: "penimbangan",
-    icon: <Icon fontSize="small">assignment</Icon>,
+    icon: <ScaleIcon fontSize="medium" />,
     route: "/penimbangan",
     component: <Penimbangan />,
   },
@@ -143,7 +150,7 @@ const routes = [
     type: "collapse",
     name : "Imunisasi",
     key : "imunisasi",
-    icon : <Icon fontSize="small">assignment</Icon>,
+    icon : <VaccinesIcon fontSize="medium" />,
     route : "/imunisasi",
     component : <Imunisasi />,
   },
@@ -163,7 +170,7 @@ const routes = [
     type: "collapse",
     name: "Daftar Anak",
     key: "anak",
-    icon: <Icon fontSize="small">assignment</Icon>,
+    icon: <EscalatorWarningIcon fontSize="medium" />,
     route: "/anak",
     component: <Anak />,
   },
@@ -183,13 +190,14 @@ const routes = [
 
   },
 
-          //User
+            //User
 
   {
     type: "collapse",
     name: "Daftar User",
     key: "user",
-    icon: <Icon fontSize="small">user</Icon>,
+    //
+    icon: <GroupIcon fontSize="medium" />,
     route: "/user",
     component: <User />,
   },
@@ -204,8 +212,8 @@ const routes = [
   {
     name: "edit-user",
     key: "edit-user",
-    route: "/user/edit/:nik",
-    // component: <EditUser />,
+    route: "/user/edit/:id",
+    component: <EditUser />,
   },
 
         //Login

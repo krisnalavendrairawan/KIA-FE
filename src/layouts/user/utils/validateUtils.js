@@ -22,7 +22,7 @@ const checkUsernameExists = async (username) => {
 const checkEmailExists = async (email) => {
     try {
         const response = await axios.get(`http://127.0.0.1:8000/api/cekEmail/${email}`);
-        // console.log(response);
+        console.log(response);
         return response.data.message; 
     } catch (error) {
         console.error('Error checking email:', error);
@@ -30,5 +30,29 @@ const checkEmailExists = async (email) => {
     }
 };
 
-export { validateRT, checkUsernameExists, checkEmailExists };
+const checkUsernameExistsEdit = async (username, id) => {
+    try {
+        const response = await axios.get(`http://127.0.0.1:8000/api/cekUsernameEdit/${username}/${id}`);
+        console.log(response.data.message);
+        return response.data.message;
+    }
+    catch (error) {
+        console.error('Error checking username:', error);
+        return false;
+    }
+}
+
+const checkEmailExistsEdit = async (email, id) => {
+    try {
+        const response = await axios.get(`http://127.0.0.1:8000/api/cekEmailEdit/${email}/${id}`);
+        console.log(response.data.message);
+        return response.data.message;
+    }
+    catch (error) {
+        console.error('Error checking email:', error);
+        return false;
+    }
+}
+
+export { validateRT, checkUsernameExists, checkEmailExists, checkUsernameExistsEdit, checkEmailExistsEdit};
 

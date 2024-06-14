@@ -2,7 +2,7 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout"
 import DashboardNavbar from "examples/Navbars/DashboardNavbar"
 import axios from "axios"
 import "react-datepicker/dist/react-datepicker.css";
-import { Card, CardActionArea, CardMedia, CardContent, Grid,Typography, Stack, TextField, Box, Autocomplete,InputAdornment, Button } from '@mui/material';
+import { Card, CardActionArea, CardMedia, CardContent, Grid,Typography, Stack, TextField, Box, Autocomplete,InputAdornment, Button, Alert } from '@mui/material';
 
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -17,6 +17,7 @@ import dataAnak from "./data/data";
 import calculateWeightGain from "./data/calculateWeightGain";
 import giziCalculation from "./data/giziCalculation";
 import bayiImage from "assets/images/penimbangan/bayi.png";
+import MonitorWeightIcon from '@mui/icons-material/MonitorWeight';
 
 
 
@@ -138,6 +139,9 @@ const CreatePenimbangan = () => {
     return (
         <DashboardLayout>
             <DashboardNavbar />
+            <Alert variant="filled" icon={<MonitorWeightIcon fontSize="inherit" />} severity="info" sx={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', marginTop: '1rem' }}>
+                    Halaman Create Imunisasi
+                </Alert>
             {data && (
                 <form onSubmit={handleSubmit(onSubmit)}>
 

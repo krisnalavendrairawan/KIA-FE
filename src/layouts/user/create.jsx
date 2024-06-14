@@ -1,4 +1,3 @@
-
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { Box, TextField, Stack, Grid, FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton, Button, MenuItem, Select } from '@mui/material';
@@ -59,11 +58,11 @@ const CreateUser = () => {
             alamat: data.alamat
         }
 
-                const usernameExists = await checkUsernameExists(userData.username);
-            console.log(usernameExists);
+            const usernameExists = await checkUsernameExists(userData.username);
+            // console.log(usernameExists);
 
-                const emailExists = await checkEmailExists(userData.email);
-            console.log(emailExists);
+            const emailExists = await checkEmailExists(userData.email);
+            // console.log(emailExists);
         //cek apakah password dan confirm password sama jika tidak sama maka muncul sweet alert
         if(data.password !== data.confirm_password){
             Swal.fire({
@@ -273,8 +272,6 @@ const CreateUser = () => {
                                     defaultValue=""
                                     render={({ field }) => <Select
                                         fullWidth 
-                                        //memakai input andornment role
-
                                         labelId="jenis-kelamin-label"
                                         id="jenis-kelamin"
                                         {...field}
@@ -283,7 +280,7 @@ const CreateUser = () => {
                                         sx={{ height: '40px'}}
 
                                     >
-                                        <MenuItem value="Laki-laki">Laki-laki</MenuItem>
+                                        <MenuItem value="Laki-Laki">Laki-Laki</MenuItem>
                                         <MenuItem value="Perempuan">Perempuan</MenuItem>
                                     </Select>}
                                 />

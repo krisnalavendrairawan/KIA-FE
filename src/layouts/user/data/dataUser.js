@@ -7,10 +7,14 @@ import MDAvatar from "components/MDAvatar";
 import MDBadge from "components/MDBadge";
 import Swal from 'sweetalert2';
 
+import useDeleteData from "hooks/useDelete";
+
 import team2 from "assets/images/team-2.jpg";
+import team3 from "assets/images/team-3.jpg";
 
 export default function DataUser() {
     const [datas, setDatas] = useState([]);
+    const { loading: deleteLoading, error: deleteError, deleteData } = useDeleteData("http://127.0.0.1:8000/api/deleteUser");
 
     //get user menggunakan async await
     const getUser = async () => {
@@ -29,8 +33,14 @@ export default function DataUser() {
     }
 
     useEffect(() => {
-        getUser();
-    }, []);
+      getUser();
+  }, []);
+
+  const handleDelete = async (id) => {
+    console.log("Delete action for row id:", id);
+    await deleteData(id, setDatas);
+    // await deleteData(id, setDatas);
+};
 
 
     const Users = ({ image, nama, nik, role }) => (
@@ -53,7 +63,7 @@ export default function DataUser() {
     };
 
     const rows = datas.map((data, index) => ({
-        nama: <Users image={team2} nama={data.nama} role={String(data.role)} />,
+        nama: <Users image={team3} nama={data.nama} role={String(data.role)} />,
         nik: String(data.nik),
         role: data.role,
         username: data.username,

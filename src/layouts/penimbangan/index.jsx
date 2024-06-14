@@ -7,6 +7,8 @@ import Box from '@mui/material/Box';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { Button } from '@mui/material';
 import { Edit, Visibility, Delete } from '@mui/icons-material';
+import { Alert } from "@mui/material";
+import MonitorWeightIcon from '@mui/icons-material/MonitorWeight';
 import EditPenimbanganModal from './modal/edit'; // Import EditPenimbanganModal component
 
 import useDeleteData from "hooks/useDelete"; // Import useDeleteData custom hook
@@ -112,7 +114,10 @@ const Penimbangan = () => {
     return (
         <DashboardLayout>
             <DashboardNavbar />
-            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
+            <Alert variant="filled" icon={<MonitorWeightIcon fontSize="inherit" />} severity="info">
+                Halmaan Penimbangan
+            </Alert>
+            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', marginTop: '1rem' }}>
                 <Button variant="contained" id="create-button" color="primary" onClick={handleCreatePenimbangan}>Create Penimbangan</Button>
             </Box>
             {loading ? (

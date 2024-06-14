@@ -1,23 +1,13 @@
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import { Stack } from '@mui/material';
+import { Stack, TextField, Box, Grid,MenuItem, InputLabel, Select, InputAdornment, Button, FormControl } from '@mui/material';
 import "react-datepicker/dist/react-datepicker.css";
-import Grid from '@mui/material/Grid';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import InputAdornment from '@mui/material/InputAdornment';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import Button from '@mui/material/Button';
 import { useForm, Controller, SubmitHandler } from "react-hook-form"
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
-
 import { useState, useEffect } from 'react';
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout"
 import DashboardNavbar from "examples/Navbars/DashboardNavbar"
@@ -28,7 +18,6 @@ const EditAnak = () => {
 
     const [datas, setDatas] = useState(null);
     
-    const [jenisKelamin, setJenisKelamin] = useState('');
     const { nik } = useParams();
     const today = dayjs();
 
@@ -78,9 +67,6 @@ const EditAnak = () => {
 
    
     console.log(datas);
-    const handleChange = (event) => {
-        setJenisKelamin(event.target.value);
-    };
     return (
         <DashboardLayout>
             <DashboardNavbar />
