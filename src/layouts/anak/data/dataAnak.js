@@ -4,13 +4,18 @@ import PropTypes from "prop-types";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
-import MDBadge from "components/MDBadge";
 import Swal from 'sweetalert2';
+import { Link } from "react-router-dom";
+import { format } from 'date-fns'; // Import date-fns format function
+import { id } from 'date-fns/locale';
+import { useNavigate } from "react-router-dom";
+
 
 // Images
 import team2 from "assets/images/team-2.jpg";
 
 export default function DataAnak() {
+  const navigate = useNavigate();
   const [datas, setDatas] = useState([]);
 
   useEffect(() => {
@@ -38,11 +43,10 @@ export default function DataAnak() {
       if (result.isConfirmed) {
         // Jika pengguna mengonfirmasi penghapusan
         console.log(`Delete button clicked for NIK: ${nik}`);
-        axios.delete(`http://127.0.0.1:8000/api/deleteUser/${nik}`, {
+        axios.delete(`http://127.0.0.1:8000/api/deleteAnak/${nik}`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
-        
         })
           .then((response) => {
             // Tampilkan pesan sukses jika diperlukan
@@ -88,9 +92,9 @@ export default function DataAnak() {
   );
 
   Parent.propTypes = {
-    nama_ibu: PropTypes.string.isRequired, // Validate nama_ibu prop as a string and mark it as required
-    nama_ayah: PropTypes.string.isRequired, // Validate nama_ayah prop as a string and mark it as required
-};
+    nama_ibu: PropTypes.string.isRequired,
+    nama_ayah: PropTypes.string.isRequired,
+  };
 
   // Map fetched data to the required format for rows
   const rows = datas.map((data, index) => ({
@@ -100,7 +104,7 @@ export default function DataAnak() {
     no_kk: data.no_kk,
     nama_ayah: data.nama_ayah,
     anak_ke: data.anak_ke,
-    tanggal_lahir: data.tanggal_lahir,
+    tanggal_lahir: data.tanggal_lahir ? format(new Date(data.tanggal_lahir), 'dd MMMM yyyy', { locale: id }) : '', // Format tanggal
     jenis_kelamin: data.jenis_kelamin,
     bb_lahir: `${data.bb_lahir} kg`, // Tambahkan satuan "kg"
     pb_lahir: `${data.pb_lahir} cm`, // Tambahkan satuan "cm"
@@ -109,42 +113,55 @@ export default function DataAnak() {
     action: (
       <MDBox>
         <MDTypography
+          component={Link}
+          to={`/anak/detail/${data.nik}`}
+          variant="caption"
+          color="info"
+          fontWeight="medium"
+          style={{ marginRight: 8 }}
+        >
+          View
+        </MDTypography>
+        <MDTypography
           component="a"
           href={`/anak/edit/${data.nik}`}
           variant="caption"
-          color="text"
+          color="warning"
           fontWeight="medium"
           style={{ marginRight: 8 }}
         >
           Edit
         </MDTypography>
         <MDTypography
-          component="button"
+          component={Link}
           variant="caption"
           color="error"
           fontWeight="medium"
+          style={{ marginRight: 8 }}
           onClick={() => handleDelete(data.nik)} // Call handleDelete function on click
         >
           Delete
         </MDTypography>
       </MDBox>
-      
     ),
   }));
-  return { columns: [
-    { Header: "Nama Anak", accessor: "nama_anak", width: "45%", align: "left" },
-    { Header: "Orang Tua", accessor: "orang_tua", align: "left" },
-    // { Header: "nik", accessor: "nik", align: "left" },
-    { Header: "No KK", accessor: "no_kk", align: "center" },
-    // { Header: "nama_ayah", accessor: "nama_ayah", align: "center" },
-    { Header: "Anak Ke", accessor: "anak_ke", align: "center" },
-    { Header: "Tanggal Lahir", accessor: "tanggal_lahir", align: "center" },
-    { Header: "Jenis Kelamin", accessor: "jenis_kelamin", align: "center" },
-    { Header: "Berat Badan Lahir", accessor: "bb_lahir", align: "center" },
-    { Header: "Panjang Badan Lahir", accessor: "pb_lahir", align: "center" },
-    { Header: "Alamat", accessor: "alamat", align: "center" },
-    { Header: "No HP Ortu", accessor: "no_hp_ortu", align: "center" },
-    { Header: "Aksi", accessor: "action", align: "center" },
-  ],
-  rows: rows };
+
+  return {
+    columns: [
+      { Header: "Nama Anak", accessor: "nama_anak", width: "45%", align: "left" },
+      { Header: "Orang Tua", accessor: "orang_tua", align: "left" },
+      // { Header: "nik", accessor: "nik", align: "left" },
+      // { Header: "No KK", accessor: "no_kk", align: "center" },
+      // { Header: "nama_ayah", accessor: "nama_ayah", align: "center" },
+      // { Header: "Anak Ke", accessor: "anak_ke", align: "center" },
+      { Header: "Tanggal Lahir", accessor: "tanggal_lahir", align: "center" },
+      { Header: "Jenis Kelamin", accessor: "jenis_kelamin", align: "center" },
+      { Header: "Berat Badan Lahir", accessor: "bb_lahir", align: "center" },
+      { Header: "Panjang Badan Lahir", accessor: "pb_lahir", align: "center" },
+      { Header: "Alamat", accessor: "alamat", align: "center" },
+      // { Header: "No HP Ortu", accessor: "no_hp_ortu", align: "center" },
+      { Header: "Aksi", accessor: "action", align: "center" },
+    ],
+    rows: rows
+  };
 }

@@ -20,3 +20,22 @@
     opacity: 0.9;
 }
 
+#create-button {
+    /* text color white */
+    color: white;
+    /* background color blue */
+    background-color: #007bff;
+}
+
+#grafik-button{
+        /* text color white */
+        color: white;
+        /* background color green */
+        background-color: #007bff;
+}
+#export-button {
+    /* text color white */
+    color: white;
+    /* background color green */
+    background-color: #28a745;
+}

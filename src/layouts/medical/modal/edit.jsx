@@ -21,32 +21,32 @@ import { useForm, Controller } from "react-hook-form";
 import InputAdornment from '@mui/material/InputAdornment';
 
 // eslint-disable-next-line react/prop-types
-const EditImunisasiModal = ({ open, handleClose, selectedId }) => {
+const EditMedicalModal = ({ open, handleClose, selectedId }) => {
     const [dataAnak, setDataAnak] = useState(null);
     const [nikAnak, setNikAnak] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [medicalSelected, setMedicalSelected] = useState(null);
     const [error, setError] = useState(null);
-    const [jenisImunisasi, setJenisImunisasi] = useState('');
-    const [selectedImunisasi, setSelectedImunisasi] = useState(null);
     const { register, control, handleSubmit, reset } = useForm();
 
     useEffect(() => {
         const fetchData = async () => {
             if(selectedId){
                 setLoading(true);
-                // console.log("Selected ID: ", selectedId);
+                console.log("Selected ID: ", selectedId);
                 try{
-                    const response = await axios.get(`http://127.0.0.1:8000/api/getImunisasiById/${selectedId}`);
-                    const data = response.data.imunisasi;
+                    const response = await axios.get(`http://127.0.0.1:8000/api/getMedicalById/${selectedId}`);
+                    const data = response.data.riwayatPenyakit[0];
                     console.log(data);
                     setDataAnak(data);
-                    setJenisImunisasi(data.jenis_imunisasi);
                     setNikAnak(data.nik_anak);
-                    setSelectedImunisasi(data);
+                    setMedicalSelected(data);
+                    // console.log(medicalData)
                     reset({
-                        tgl_imunisasi: dayjs(data.tgl_imunisasi),
-                        jenis_imunisasi: data.jenis_imunisasi,
-                        usia: data.usia
+                        tgl_rujukan: dayjs(data.tgl_rujukan),
+                        jenis_penyakit: data.jenis_penyakit,
+                        rujukan : data.rujukan,
+                        saran: data.saran
                     });
                 }
                 catch(error){
@@ -64,7 +64,7 @@ const EditImunisasiModal = ({ open, handleClose, selectedId }) => {
     useEffect(() => {
         if(!open){
             setNikAnak(null);
-            setSelectedImunisasi(null);
+            setMedicalSelected(null);
             reset();
         }} , [open]);
     
@@ -74,15 +74,16 @@ const EditImunisasiModal = ({ open, handleClose, selectedId }) => {
         // console.log(data);
         try{
             const newData = {
-                tgl_imunisasi: dayjs(data.tgl_imunisasi).format('YYYY-MM-DD'),
+                tgl_rujukan: dayjs(data.tgl_rujukan).format('YYYY-MM-DD'),
                 nik_anak: nikAnak,
-                jenis_imunisasi: data.jenis_imunisasi,
-                usia: data.usia,
+                jenis_penyakit: data.jenis_penyakit,
+                rujukan: data.rujukan,
+                saran: data.saran,
                 id_kader: id_user
             }
             console.log(newData);
 
-            const result = await axios.put(`http://localhost:8000/api/updateImunisasi/${selectedId}`, newData);
+            const result = await axios.put(`http://localhost:8000/api/updateMedical/${selectedId}`, newData);
             alert('Data berhasil di update');
             handleClose(); // Close the modal after successful update
         }catch(error){
@@ -90,14 +91,11 @@ const EditImunisasiModal = ({ open, handleClose, selectedId }) => {
         }
     }
 
-    const handleChange = (event) => {
-        setJenisImunisasi(event.target.value);
-    }
     return (
         <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open} maxWidth="md" >
             <form onSubmit={handleSubmit(onSubmit)}>
                 <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-                    Edit Imunisasi
+                    Edit Riwayat Penyakit Anak
                     <IconButton
                         aria-label="close"
                         onClick={handleClose}
@@ -128,13 +126,13 @@ const EditImunisasiModal = ({ open, handleClose, selectedId }) => {
                             </Grid>
                             <Grid item xs={12}>
                             <Controller
-                                name="tgl_imunisasi"
+                                name="tgl_rujukan"
                                 control={control}
-                                defaultValue={dayjs(dataAnak?.tgl_imunisasi)}
+                                defaultValue={dayjs(dataAnak?.tgl_rujukan)}
                                 render={({ field }) => (
                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                                         <DemoContainer components={['DatePicker']}>
-                                            <DatePicker fullWidth label="Tanggal Imunisasi" {...field} />
+                                            <DatePicker fullWidth label="Tanggal Rujukan" {...field} />
                                         </DemoContainer>
                                     </LocalizationProvider>
                                 )}
@@ -142,46 +140,27 @@ const EditImunisasiModal = ({ open, handleClose, selectedId }) => {
 
                             </Grid>
                             <Grid item xs={12}>
-                                <FormControl variant="outlined" fullWidth>
-                                    <InputLabel id="jenis_imunisasi">Jenis Imunisasi</InputLabel>
-                                    <Controller
-                                        name="jenis_imunisasi"
-                                        control={control}
-                                        defaultValue={dataAnak?.jenis_imunisasi} // Ganti dengan defaultValue
-                                        render={({ field }) => <Select
-                                            labelId="jenis_imunisasi"
-                                            id="jenis_imunisasi"
-                                            label="Jenis Imunisasi"
-                                            sx={{ height: '40px'}}
-                                            onChange={handleChange}
-                                            {...field}
-                                        >
-                                            {/* Add immunization types according to regulations */}
-                                            <MenuItem value={'BCG'}>BCG</MenuItem>
-                                            <MenuItem value={'Polio 1'}>Polio 1</MenuItem>
-                                            <MenuItem value={'Polio 2'}>Polio 2</MenuItem>
-                                            <MenuItem value={'Polio 3'}>Polio 3</MenuItem>
-                                            <MenuItem value={'Polio 4'}>Polio 4</MenuItem>
-                                            <MenuItem value={'DPT-HB-Hib 1'}>DPT-HB-Hib 1</MenuItem>
-                                            <MenuItem value={'DPT-HB-Hib 2'}>DPT-HB-Hib 2</MenuItem>
-                                            <MenuItem value={'DPT-HB-Hib 3'}>DPT-HB-Hib 3</MenuItem>
-                                            <MenuItem value={'Campak'}>Campak</MenuItem>
-                                            <MenuItem value={'MR'}>MR</MenuItem>
-                                            <MenuItem value={'JE'}>JE</MenuItem>
-                                            <MenuItem value={'DPT'}>DPT</MenuItem>
-                                            <MenuItem value={'Hepatitis B'}>Hepatitis B</MenuItem>
-                                        </Select>}
-                                    />
-                                </FormControl>
+                                <Controller
+                                    name="jenis_penyakit"
+                                    control={control}
+                                    defaultValue={dataAnak?.jenis_penyakit}
+                                    render={({ field }) => <TextField fullWidth {...field} label="Jenis Penyakit" variant="outlined" />}
+                                />
                             </Grid>
                             <Grid item xs={12}>
                                 <Controller
-                                    name="usia"
+                                    name="rujukan"
                                     control={control}
-                                    defaultValue={dataAnak?.usia}
-                                    render={({ field }) => <TextField fullWidth {...field} label="Usia" variant="outlined" type='number' InputProps={{
-                                        startAdornment: <InputAdornment position="start">bulan</InputAdornment>,
-                                    }} />}
+                                    defaultValue={dataAnak?.rujukan}
+                                    render={({ field }) => <TextField fullWidth {...field} label="Tempat Rujukan" variant="outlined" />}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Controller
+                                    name="saran"
+                                    control={control}
+                                    defaultValue={dataAnak?.saran}
+                                    render={({ field }) => <TextField fullWidth {...field} label="Saran" variant="outlined" />}
                                 />
                             </Grid>
                         </Grid>
@@ -198,6 +177,7 @@ const EditImunisasiModal = ({ open, handleClose, selectedId }) => {
             </form>
         </Dialog>
     )
-};
+}
 
-export default EditImunisasiModal;
+
+export default EditMedicalModal;

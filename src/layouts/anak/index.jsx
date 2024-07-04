@@ -6,6 +6,9 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add';
+import { format } from 'date-fns'; // Import date-fns format function
+import { Box } from "@mui/material";
+
 
 // Import komponen Material Dashboard 2 React
 import MDBox from "components/MDBox";
@@ -14,6 +17,7 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
+import { useNavigate } from "react-router-dom";
 
 // Import dataAnak
 import dataAnak from "./data/dataAnak";
@@ -22,7 +26,7 @@ function Tables() {
   if (!localStorage.getItem('token')) {
     window.location.href = '/authentication/sign-in';
   }
-  
+  const navigate = useNavigate();
   // Destructure dataAnak
   const { columns, rows } = dataAnak();
   
@@ -39,19 +43,18 @@ function Tables() {
   const startIndex = (page - 1) * rowsPerPage;
   const endIndex = startIndex + rowsPerPage;
 
+  // Fungsi untuk membuat anak baru
+  const handleCreateAnak = () => {
+    navigate('/anak/create');
+  }
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <Stack direction="row" justifyContent="flex-end" alignItems="flex-end" spacing={3}>
-        {/* Tombol "Tambah Anak" dengan logo */}
-        <Button
-          variant="contained"
-          style={{ backgroundColor: 'green', color: '#ffffff' }}
-          startIcon={<AddIcon />}
-          href="/anak/create"
-        >
-          Tambah Anak
-        </Button>
+      <Stack direction="row" justifyContent="flex-start" alignItems="flex-start" spacing={3}>
+        <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', marginTop: '1rem' }}>
+          <Button variant="contained" id="create-button" onClick={handleCreateAnak}>  <AddIcon sx={{marginRight: '10px'}} /> Tambah Data Anak</Button>
+        </Box>
       </Stack>
       <MDBox pt={6} pb={3}>
         <Grid container spacing={6}>

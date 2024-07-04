@@ -12,17 +12,19 @@ import MonitorWeightIcon from '@mui/icons-material/MonitorWeight';
 import EditPenimbanganModal from './modal/edit'; // Import EditPenimbanganModal component
 
 import useDeleteData from "hooks/useDelete"; // Import useDeleteData custom hook
+import { format } from 'date-fns';
+import { id } from 'date-fns/locale';
 
 const VISIBLE_FIELDS = [
     'tgl_penimbangan',
-    'nik_anak',
+    // 'nik_anak',
     'nama_anak',
     'berat_badan',
     'tinggi_badan',
     'status_gizi',
     'keterangan',
-    'saran',
-    'bulan_ke'
+    // 'saran',
+    // 'usia'
 ];
 
 const Penimbangan = () => {
@@ -35,6 +37,7 @@ const Penimbangan = () => {
     const { loading: deleteLoading, error: deleteError, deleteData } = useDeleteData("http://127.0.0.1:8000/api/deletePenimbangan");
 
     useEffect(() => {
+        // Set bahasa lokal menjadi bahasa Indonesia
         fetchDataPenimbangan();
     }, []);
 
@@ -46,9 +49,12 @@ const Penimbangan = () => {
                     id: row.id_penimbangan,
                     nama_anak: row.anak ? row.anak.nama_anak : '',
                     berat_badan: row.berat_badan ? row.berat_badan + " kg" : '',
-                    tinggi_badan: row.tinggi_badan ? row.tinggi_badan + " cm" : ''
-                }));
-                setDataPenimbangan(dataWithIds);
+                    tinggi_badan: row.tinggi_badan ? row.tinggi_badan + " cm" : '',
+                    tgl_penimbangan: row.tgl_penimbangan ? format(new Date(row.tgl_penimbangan), 'dd MMMM yyyy', { locale: id }) : '',
+                }))
+                const filteredData = dataWithIds.filter(data => data.status_gizi !== '-');
+
+                setDataPenimbangan(filteredData);
                 setLoading(false);
             })
             .catch((error) => {
@@ -57,14 +63,16 @@ const Penimbangan = () => {
             });
     };
 
-    const handleView = (id) => {
-        console.log("View action for row id:", id);
-    };
 
     const handleEdit = (id) => {
         console.log("Edit action for row id:", id);
         setSelectedId(id);
         setOpenEditDialog(true);
+    };
+
+    const handleView = (id) => {
+        console.log("View action for row id:", id);
+        navigate(`/penimbangan/detail/${id}`);
     };
 
     const handleDelete = async (id) => {

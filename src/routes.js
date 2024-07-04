@@ -49,13 +49,24 @@ import LogOut from "layouts/authentication/log-out";
 import User from "layouts/user";
 import CreateUser from "layouts/user/create";
 import EditUser from "layouts/user/edit";
+import UserDetail from "layouts/user/view";
+import ProfilDetailUser from "layouts/user/profile/profile";
 import Anak from "layouts/anak";
 import CreateAnak from "layouts/anak/create";
 import EditAnak from "layouts/anak/edit";
+import DetailAnak from "layouts/anak/view";
 import Penimbangan from "layouts/penimbangan";
 import CreatePenimbangan from "layouts/penimbangan/create";
+import DetailPenimbangan from "layouts/penimbangan/view";
 import Imunisasi from "layouts/imunisasi";
 import CreateImunisasi from "layouts/imunisasi/create";
+import DetailImunisasi from "layouts/imunisasi/view";
+import Medical from "layouts/medical";
+import CreateMedical from "layouts/medical/create";
+import MedicalDetail from "layouts/medical/view";
+import GraphicChild from "layouts/anak/detailGrafik";
+
+// import { Medical, CreateMedical, MedicalDetail } from 'layouts/medical';
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -76,14 +87,14 @@ const routes = [
     route: "/dashboard",
     component: <Dashboard />,
   },
-  {
-    type: "collapse",
-    name: "Tables",
-    key: "tables",
-    icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/tables",
-    component: <Tables />,
-  },
+  // {
+  //   type: "collapse",
+  //   name: "Tables",
+  //   key: "tables",
+  //   icon: <Icon fontSize="small">table_view</Icon>,
+  //   route: "/tables",
+  //   component: <Tables />,
+  // },
   {
     type: "collapse",
     name: "Billing",
@@ -108,14 +119,14 @@ const routes = [
     route: "/notifications",
     component: <Notifications />,
   },
-  {
-    type: "collapse",
-    name: "Profile",
-    key: "profile",
-    icon: <Icon fontSize="small">person</Icon>,
-    route: "/profile",
-    component: <Profile />,
-  },
+  // {
+  //   type: "collapse",
+  //   name: "Profile",
+  //   key: "profile",
+  //   icon: <Icon fontSize="small">person</Icon>,
+  //   route: "/profile",
+  //   component: <Profile />,
+  // },
 
         //Sign In
   {
@@ -145,6 +156,13 @@ const routes = [
     component: <Penimbangan />,
   },
 
+  {
+    name: "detail-penimbangan",
+    key: "detail-penimbangan",
+    route: "/penimbangan/detail/:id",
+    component: <DetailPenimbangan />,
+  },
+
         //Imunisasi
   {
     type: "collapse",
@@ -156,12 +174,44 @@ const routes = [
   },
 
   {
-    type: "divider",
     name : "create-imunisasi",  
     key : "create-imunisasi",
     route : "/imunisasi/create",
     component : <CreateImunisasi />,
 
+  },
+
+  {
+    name : "detail-imunisasi",
+    key : "detail-imunisasi",
+    route : "/imunisasi/detail/:id",
+    component : <DetailImunisasi />,
+  },
+
+  //Riwayat Penyakit Anak
+
+  {
+    type: "collapse",
+    name : "Riwayat Penyakit",
+    key : "medical-information",
+    icon : <MedicalInformationIcon fontSize="medium" />,
+    route : "/medical",
+    component : <Medical />,
+  },
+
+  {
+    type: "divider",
+    name : "create-medical",
+    key : "create-medical",
+    route : "/medical/create",
+    component : <CreateMedical />,
+  },
+
+  {
+    name : "detail-medical",
+    key : "detail-medical",
+    route : "/medical/detail/:id",
+    component : <MedicalDetail />,
   },
 
         //Anak
@@ -190,6 +240,19 @@ const routes = [
 
   },
 
+  {
+    name : "detail-anak",
+    key : "detail-anak",
+    route : "/anak/detail/:nik",
+    component : <DetailAnak />,
+  },
+  {
+    name: "grafik-anak",
+    key: "grafik-anak",
+    route: "/anak/detail/grafik/:nik",
+    component: <GraphicChild />,
+  },
+
             //User
 
   {
@@ -214,6 +277,13 @@ const routes = [
     key: "edit-user",
     route: "/user/edit/:id",
     component: <EditUser />,
+  },
+
+  {
+    name: "detail-user",
+    key: "detail-user",
+    route: "/user/detail/:id",
+    component: <ProfilDetailUser />,
   },
 
         //Login

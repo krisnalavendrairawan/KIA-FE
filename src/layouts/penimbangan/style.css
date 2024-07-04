@@ -42,3 +42,10 @@
     /* background color red
     background-color: #dc3545; */
 }
+
+#export-button {
+    /* text color white */
+    color: white;
+    /* background color green */
+    background-color: #28a745;
+}

@@ -109,9 +109,9 @@ function ProfileInfoCard({ title, description, info, social, action, shadow }) {
           {renderItems}
           <MDBox display="flex" py={1} pr={2}>
             <MDTypography variant="button" fontWeight="bold" textTransform="capitalize">
-              social: &nbsp;
+              {/* social: &nbsp; */}
             </MDTypography>
-            {renderSocial}
+            {/* {renderSocial} */}
           </MDBox>
         </MDBox>
       </MDBox>

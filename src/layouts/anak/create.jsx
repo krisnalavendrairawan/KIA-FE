@@ -17,6 +17,8 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form"
 import axios from 'axios';
 import dayjs from 'dayjs';
 
+import { validateRT } from 'layouts/anak/utils/validateUtils';
+
 import './style.css';
 
 
@@ -28,7 +30,7 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar"
 const CreateAnak = () => {
     const [jenisKelamin, setJenisKelamin] = useState('');
 
-    const {control, handleSubmit} = useForm();
+    const { control, handleSubmit, formState: { errors } } = useForm();
     const today = dayjs();
 
     const handleChange = (event) => {
@@ -48,6 +50,8 @@ const CreateAnak = () => {
             bb_lahir: data.bb_lahir,
             pb_lahir: data.pb_lahir,
             no_hp_ortu: data.no_hp_orang_tua,
+            rt : data.rt,
+            rw : data.rw,
             alamat: data.alamat,
             umur: 0,
         }
@@ -271,6 +275,68 @@ const CreateAnak = () => {
                          sx={{
                             width: 500,
                             maxWidth: '100%',
+                            display: 'flex',
+                            flexDirection: 'row',
+                            gap: '10px',
+                        }}
+                    >
+                        <Controller
+                            name="rt"
+                            control={control}
+                            defaultValue=""
+                            rules={{
+                                required: 'RT is required',
+                                min: { value: 1, message: "RT must be at least 1" },
+                                validate: validateRT // Custom validation function
+                            }}
+                            render={({ field }) => (
+                                <TextField
+                                    fullWidth
+                                    {...field}
+                                    label="RT"
+                                    variant="outlined"
+                                    type='number'
+                                    error={Boolean(errors.rt)}
+                                    helperText={errors.rt && errors.rt.message}
+                                />
+                            )}
+                        />
+
+                            <FormControl variant="outlined" fullWidth>
+                                <InputLabel id="rw-label">RW</InputLabel>
+                                <Controller
+                                    name="rw"
+                                    control={control}
+                                    defaultValue=""
+                                    render={({ field }) => <Select
+                                        fullWidth 
+                                        labelId="rw-label"
+                                        id="rw"
+                                        {...field}
+                                        label="RW"
+                                        defaultValue={1}
+                                        sx={{ height: '100%'}}
+                                    >
+                                        <MenuItem value="1">01</MenuItem>
+                                        <MenuItem value="2">02</MenuItem>
+                                        <MenuItem value="3">03</MenuItem>
+                                        <MenuItem value="4">04</MenuItem>
+                                        <MenuItem value="5">05</MenuItem>
+                                        <MenuItem value="6">06</MenuItem>
+                                        <MenuItem value="7">07</MenuItem>
+                                        <MenuItem value="8">08</MenuItem>
+                                        <MenuItem value="9">09</MenuItem>
+                                        <MenuItem value="10">10</MenuItem>
+                                        <MenuItem value="11">11</MenuItem>
+                                        <MenuItem value="12">12</MenuItem>
+                                    </Select>}
+                                />
+                            </FormControl>
+                    </Box>
+                    <Box
+                         sx={{
+                            width: 500,
+                            maxWidth: '100%',
                         }}
                     >
                         <Controller
@@ -281,6 +347,27 @@ const CreateAnak = () => {
                         />
                     </Box>
 
+                    <Box
+                         sx={{
+                            width: 500,
+                            maxWidth: '100%',
+                        }}
+                    >
+                    <Controller
+                        name="alamat"
+                        control={control}
+                        defaultValue=""
+                        render={({ field }) =>
+                        <TextField
+                            fullWidth 
+                            id="outlined-multiline-static"
+                            label="Alamat"
+                            multiline
+                            rows={4}
+                            {...field}
+                        />}
+                    />
+                    </Box>
                     <Box
                          sx={{
                             width: 500,

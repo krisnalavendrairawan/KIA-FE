@@ -55,7 +55,6 @@ function Overview() {
   return (
     // eslint-disable-next-line react/jsx-no-comment-textnodes, react/react-in-jsx-scope
     <DashboardLayout>
-      // eslint-disable-next-line react/react-in-jsx-scope
       <DashboardNavbar />
       <MDBox mb={2} />
       <Header>

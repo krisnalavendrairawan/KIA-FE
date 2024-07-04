@@ -14,7 +14,7 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 
 //utils
-import { validateRT, checkUsernameExists, checkEmailExists } from './utils/validateUtils';
+import { validateNIK, validateRT, validateEmail, validatePasswordMatch, checkUsernameExists, checkEmailExists, checkNIKExists } from './utils/validateUtils';
 
 
 const CreateUser = () => {
@@ -24,22 +24,19 @@ const CreateUser = () => {
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleClickShowConfirmPassword = () => setShowConfirmPassword((show) => !show);
 
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault();
+    };
 
-  const { control, handleSubmit, formState: { errors } } = useForm();
+    const { control, handleSubmit, formState: { errors } } = useForm();
     const today = dayjs();
 
     const onSubmit = async (data) => {
-
-        const emailRegex = /\S+@\S+\.\S+/;
-        if (!emailRegex.test(data.email)) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Format email tidak valid!',
-            });
+        if (!validateEmail(data.email)) {
+            return;
+        }
+        const isPasswordMatch = validatePasswordMatch(data.password, data.confirm_password);
+        if (!isPasswordMatch) {
             return;
         }
 
@@ -58,54 +55,30 @@ const CreateUser = () => {
             alamat: data.alamat
         }
 
-            const usernameExists = await checkUsernameExists(userData.username);
-            // console.log(usernameExists);
+        const nikExists = await checkNIKExists(userData.nik);
+        const usernameExists = await checkUsernameExists(userData.username);
+        const emailExists = await checkEmailExists(userData.email);
 
-            const emailExists = await checkEmailExists(userData.email);
-            // console.log(emailExists);
-        //cek apakah password dan confirm password sama jika tidak sama maka muncul sweet alert
-        if(data.password !== data.confirm_password){
+        try {
+            const res = await axios.post('http://127.0.0.1:8000/api/register', userData);
+            console.log(res);
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: 'Data user berhasil ditambahkan!',
+            }).then(() => {
+                window.location.href = '/user';
+            });
+        } catch (err) {
+            console.error(err);
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text: 'Password dan Confirm Password tidak sama!',
-              })
-        }else if(usernameExists === "Username sudah digunakan"){
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Username sudah digunakan!',
-              })
-            return;
-        } else if(emailExists === "Email sudah digunakan"){
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Email sudah digunakan!',
-                })
-            return;
-        } else{
-            // console.log(userData)
-            try {
-                const res = await axios.post('http://127.0.0.1:8000/api/register', userData);
-                console.log(res);
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil',
-                    text: 'Data user berhasil ditambahkan!',
-                }).then(() => {
-                    window.location.href = '/user';
-                });
-            } catch (err) {
-                console.error(err);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Data user gagal ditambahkan!',
-                });
-            }
+                text: 'Data user gagal ditambahkan!',
+            });
         }
-        
+
+
     }
 
     return (
@@ -124,321 +97,382 @@ const CreateUser = () => {
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                     <Grid item xs={6}>
-                    <Stack direction="column" justifyContent="flex-start" alignItems="flex-start" spacing={3}>
+                        <Stack direction="column" justifyContent="flex-start" alignItems="flex-start" spacing={3}>
 
-                        <Box
-                            sx={{
-                                width: 500,
-                                maxWidth: '100%',
-                            }}
-                        >
-                            <Controller
-                                name="nik"
-                                control={control}
-                                defaultValue=""
-                                render={({ field }) => <TextField fullWidth {...field} label="NIK" variant="outlined" type='number' />}
-                            />
-                        </Box>
-                        <Box
-                            sx={{
-                                width: 500,
-                                maxWidth: '100%',
-                            }}
-                        >
-                            <Controller
-                                name="nama"
-                                control={control}
-                                defaultValue=""
-                                render={({ field }) => <TextField fullWidth {...field} label="Nama" variant="outlined" />}
-                            />
-                        </Box>
-                        <Box
-                            sx={{
-                                width: 500,
-                                maxWidth: '100%',
-                            }}
-                        >
-                            <Controller
-                                name="username"
-                                control={control}
-                                defaultValue=""
-                                render={({ field }) => <TextField fullWidth {...field} label="Username" variant="outlined" />}
-                            />
-                        </Box>
-                        <Box
-                            sx={{
-                                width: 500,
-                                maxWidth: '100%',
-                            }}
-                        >
-                            <Controller
-                                name="email"
-                                control={control}
-                                defaultValue=""
-                                render={({ field }) => <TextField fullWidth {...field} label="Email" variant="outlined" />}
-                            />
-                        </Box>
-                        <Box
-                            sx={{
-                                width: 500,
-                                maxWidth: '100%',
-                            }}
-                        >
-                            <Controller
-                                name="password"
-                                control={control}
-                                defaultValue=""
-                                render={({ field }) => (
-                                    <FormControl fullWidth variant="outlined">
-                                        <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-                                        <OutlinedInput
-                                            {...field}
-                                            id="outlined-adornment-password"
-                                            type={showPassword ? 'text' : 'password'}
-                                            endAdornment={
-                                                <InputAdornment position="end">
-                                                    <IconButton
-                                                        aria-label="toggle password visibility"
-                                                        onClick={handleClickShowPassword}
-                                                        onMouseDown={handleMouseDownPassword}
-                                                        edge="end"
-                                                    >
-                                                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                                                    </IconButton>
-                                                </InputAdornment>
-                                            }
-                                            label="Password"
-                                        />
-                                    </FormControl>
-                                )}
-                            />
-                        </Box>
-                        
-                        {/* confirm password */}
-                        <Box
-                            sx={{
-                                width: 500,
-                                maxWidth: '100%',
-                            }}
-                        >
-                            <Controller
-                                name="confirm_password"
-                                control={control}
-                                defaultValue=""
-                                render={({ field }) => (
-                                    <FormControl fullWidth variant="outlined">
-                                        <InputLabel htmlFor="outlined-adornment-confirm_password">Confirm Password</InputLabel>
-                                        <OutlinedInput
-                                            {...field}
-                                            id="outlined-adornment-confirm_password"
-                                            type={showConfirmPassword ? 'text' : 'password'}
-                                            endAdornment={
-                                                <InputAdornment position="end">
-                                                    <IconButton
-                                                        aria-label="toggle confirm_password visibility"
-                                                        onClick={handleClickShowConfirmPassword}
-                                                        onMouseDown={handleMouseDownPassword}
-                                                        edge="end"
-                                                    >
-                                                        {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                                                    </IconButton>
-                                                </InputAdornment>
-                                            }
-                                            label="Confirm Password"
-                                        />
-                                    </FormControl>
-                                )}
-                            />
-                        </Box>
+                            <Box
+                                sx={{
+                                    width: 500,
+                                    maxWidth: '100%',
+                                }}
+                            >
+                                <Controller
+                                    name="nik"
+                                    control={control}
+                                    defaultValue=""
+                                    rules={{
+                                        required: 'Kolom NIK harus diisi',
+                                        min: { value: 1, message: "NIK must be at least 1" },
+                                    }}
+                                    render={({ field }) => <TextField fullWidth {...field} label="NIK" variant="outlined" type='number' error={Boolean(errors.nik)} helperText={errors.nik && errors.nik.message} />}
+                                />
+                            </Box>
+                            <Box
+                                sx={{
+                                    width: 500,
+                                    maxWidth: '100%',
+                                }}
+                            >
+                                <Controller
+                                    name="nama"
+                                    control={control}
+                                    defaultValue=""
+                                    rules={{
+                                        required: 'Kolom Nama harus diisi',
+                                    }}
+                                    render={({ field }) => <TextField fullWidth {...field} label="Nama" variant="outlined"
+                                        error={Boolean(errors.nama)}
+                                        helperText={errors.nama && errors.nama.message}
+                                    />}
+                                />
+                            </Box>
+                            <Box
+                                sx={{
+                                    width: 500,
+                                    maxWidth: '100%',
+                                }}
+                            >
+                                <Controller
+                                    name="username"
+                                    control={control}
+                                    defaultValue=""
+                                    rules={{
+                                        required: 'Kolom Username harus diisi',
+                                    }}
+                                    render={({ field }) => <TextField fullWidth {...field} label="Username" variant="outlined"
+                                        error={Boolean(errors.username)}
+                                        helperText={errors.username && errors.username.message}
+                                    />}
+                                />
+                            </Box>
+                            <Box
+                                sx={{
+                                    width: 500,
+                                    maxWidth: '100%',
+                                }}
+                            >
+                                <Controller
+                                    name="email"
+                                    control={control}
+                                    defaultValue=""
+                                    rules={{
+                                        required: 'Kolom Email harus diisi',
+                                    }}
+                                    render={({ field }) => <TextField fullWidth {...field} label="Email" variant="outlined"
+                                        error={Boolean(errors.email)}
+                                        helperText={errors.email && errors.email.message}
+                                    />}
+                                />
+                            </Box>
+                            <Box
+                                sx={{
+                                    width: 500,
+                                    maxWidth: '100%',
+                                }}
+                            >
+                                <Controller
+                                    name="password"
+                                    control={control}
+                                    defaultValue=""
+                                    rules={{
+                                        required: 'Kolom Password harus diisi',
+                                    }}
+                                    render={({ field }) => (
+                                        <FormControl fullWidth variant="outlined">
+                                            <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+                                            <OutlinedInput
+                                                {...field}
+                                                id="outlined-adornment-password"
+                                                type={showPassword ? 'text' : 'password'}
+                                                error={Boolean(errors.password)}
+                                                helperText={errors.password && errors.password.message}
+                                                endAdornment={
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                            aria-label="toggle password visibility"
+                                                            onClick={handleClickShowPassword}
+                                                            onMouseDown={handleMouseDownPassword}
+                                                            edge="end"
+                                                        >
+                                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                }
+                                                label="Password"
+                                            />
+                                        </FormControl>
+                                    )}
+                                />
+                            </Box>
 
 
+                            {/* confirm password */}
+                            <Box
+                                sx={{
+                                    width: 500,
+                                    maxWidth: '100%',
+                                }}
+                            >
+                                <Controller
+                                    name="confirm_password"
+                                    control={control}
+                                    defaultValue=""
+                                    rules={{
+                                        required: 'Kolom Confirm Password harus diisi',
+                                    }}
+                                    render={({ field }) => (
+                                        <FormControl fullWidth variant="outlined">
+                                            <InputLabel htmlFor="outlined-adornment-confirm_password">Confirm Password</InputLabel>
+                                            <OutlinedInput
+                                                {...field}
+                                                id="outlined-adornment-confirm_password"
+                                                type={showConfirmPassword ? 'text' : 'password'}
+                                                error={Boolean(errors.confirm_password)}
+                                                helperText={errors.confirm_password && errors.confirm_password.message}
+                                                endAdornment={
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                            aria-label="toggle confirm_password visibility"
+                                                            onClick={handleClickShowConfirmPassword}
+                                                            onMouseDown={handleMouseDownPassword}
+                                                            edge="end"
+                                                        >
+                                                            {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                }
+                                                label="Confirm Password"
+                                            />
+                                        </FormControl>
+                                    )}
+                                />
+                            </Box>
 
-                    </Stack>
+
+
+                        </Stack>
                     </Grid>
                     <Grid item xs={6}>
-                    <Stack direction="column" justifyContent="flex-start" alignItems="flex-start" spacing={3}>
-                        {/* Jenis Kelamin */}
-                        <Box
-                            sx={{
-                                width: 500,
-                                maxWidth: '100%',
-                            }}
-                        >
-                        <FormControl variant="outlined" fullWidth>
-                                <InputLabel id="jenis-kelamin-label">Jenis Kelamin</InputLabel>
+                        <Stack direction="column" justifyContent="flex-start" alignItems="flex-start" spacing={3}>
+                            {/* Jenis Kelamin */}
+                            <Box
+                                sx={{
+                                    width: 500,
+                                    maxWidth: '100%',
+                                }}
+                            >
+                                <FormControl variant="outlined" fullWidth>
+                                    <InputLabel id="jenis-kelamin-label">Jenis Kelamin</InputLabel>
+                                    <Controller
+                                        name="jenis_kelamin"
+                                        control={control}
+                                        defaultValue="Perempuan"
+                                        rules={{
+                                            required: 'Kolom Jenis Kelamin harus diisi'
+                                        }}
+                                        render={({ field }) => <Select
+                                            fullWidth
+                                            labelId="jenis-kelamin-label"
+                                            id="jenis-kelamin"
+                                            {...field}
+                                            label="Jenis Kelamin"
+                                            defaultValue='Perempuan'
+                                            sx={{ height: '40px' }}
+                                            error={Boolean(errors.jenis_kelamin)}
+                                            helperText={errors.jenis_kelamin && errors.jenis_kelamin.message}
+                                        >
+                                            <MenuItem value="Laki-Laki">Laki-Laki</MenuItem>
+                                            <MenuItem value="Perempuan">Perempuan</MenuItem>
+                                        </Select>}
+                                    />
+                                </FormControl>
+                            </Box>
+                            <Box
+                                sx={{
+                                    width: 500,
+                                    maxWidth: '100%',
+                                }}
+                            >
                                 <Controller
-                                    name="jenis_kelamin"
+                                    name="rt"
                                     control={control}
                                     defaultValue=""
-                                    render={({ field }) => <Select
-                                        fullWidth 
-                                        labelId="jenis-kelamin-label"
-                                        id="jenis-kelamin"
-                                        {...field}
-                                        label="Jenis Kelamin"
-                                        defaultValue='Laki-Laki'
-                                        sx={{ height: '40px'}}
-
-                                    >
-                                        <MenuItem value="Laki-Laki">Laki-Laki</MenuItem>
-                                        <MenuItem value="Perempuan">Perempuan</MenuItem>
-                                    </Select>}
+                                    rules={{
+                                        required: 'Kolom RT harus diisi',
+                                        min: { value: 1, message: "RT must be at least 1" },
+                                        validate: validateRT // Custom validation function
+                                    }}
+                                    render={({ field }) => (
+                                        <TextField
+                                            fullWidth
+                                            {...field}
+                                            label="RT"
+                                            variant="outlined"
+                                            type='number'
+                                            error={Boolean(errors.rt)}
+                                            helperText={errors.rt && errors.rt.message}
+                                        />
+                                    )}
                                 />
-                            </FormControl>
-                        </Box>
-                        <Box
-                            sx={{
-                                width: 500,
-                                maxWidth: '100%',
-                            }}
-                        >
-                        <Controller
-                            name="rt"
-                            control={control}
-                            defaultValue=""
-                            rules={{
-                                required: 'RT is required',
-                                min: { value: 1, message: "RT must be at least 1" },
-                                validate: validateRT // Custom validation function
-                            }}
-                            render={({ field }) => (
-                                <TextField
-                                    fullWidth
-                                    {...field}
-                                    label="RT"
-                                    variant="outlined"
-                                    type='number'
-                                    error={Boolean(errors.rt)}
-                                    helperText={errors.rt && errors.rt.message}
-                                />
-                            )}
-                        />
 
-                        </Box>
-                        <Box
-                            sx={{
-                                width: 500,
-                                maxWidth: '100%',
-                            }}
-                        >
-                        <FormControl variant="outlined" fullWidth>
-                                <InputLabel id="rw-label">RW</InputLabel>
+                            </Box>
+                            <Box
+                                sx={{
+                                    width: 500,
+                                    maxWidth: '100%',
+                                }}
+                            >
+                                <FormControl variant="outlined" fullWidth>
+                                    <InputLabel id="rw-label">RW</InputLabel>
+                                    <Controller
+                                        name="rw"
+                                        control={control}
+                                        defaultValue=""
+                                        rules={{
+                                            required: 'Kolom RW harus diisi',
+                                        }}
+                                        render={({ field }) => <Select
+                                            fullWidth
+                                            error={Boolean(errors.rw)}
+                                            helperText={errors.rw && errors.rw.message}
+                                            labelId="rw-label"
+                                            id="rw"
+                                            {...field}
+                                            label="RW"
+                                            defaultValue={1}
+                                            sx={{ height: '40px' }}
+                                        >
+                                            <MenuItem value="1">01</MenuItem>
+                                            <MenuItem value="2">02</MenuItem>
+                                            <MenuItem value="3">03</MenuItem>
+                                            <MenuItem value="4">04</MenuItem>
+                                            <MenuItem value="5">05</MenuItem>
+                                            <MenuItem value="6">06</MenuItem>
+                                            <MenuItem value="7">07</MenuItem>
+                                            <MenuItem value="8">08</MenuItem>
+                                            <MenuItem value="9">09</MenuItem>
+                                            <MenuItem value="10">10</MenuItem>
+                                            <MenuItem value="11">11</MenuItem>
+                                            <MenuItem value="12">12</MenuItem>
+                                        </Select>}
+                                    />
+                                </FormControl>
+                            </Box>
+
+                            <Box
+                                sx={{
+                                    width: 500,
+                                    maxWidth: '100%',
+                                }}
+                            >
+                                <FormControl variant="outlined" fullWidth>
+                                    <InputLabel id="role-label">Petugas</InputLabel>
+                                    <Controller
+                                        name="role"
+                                        control={control}
+                                        defaultValue=""
+                                        rules={{
+                                            required: 'Kolom Petugas harus diisi',
+                                        }}
+                                        render={({ field }) => <Select
+                                            fullWidth
+                                            error={Boolean(errors.role)}
+                                            helperText={errors.role && errors.role.message}
+                                            labelId="role-label"
+                                            id="role"
+                                            {...field}
+                                            label="Petugas"
+                                            defaultValue={1}
+                                            sx={{ height: '40px' }}
+                                        >
+                                            <MenuItem value="kader">Kader</MenuItem>
+                                            <MenuItem value="bidan">Bidan</MenuItem>
+
+                                        </Select>}
+                                    />
+                                </FormControl>
+                            </Box>
+
+                            <Box
+                                sx={{
+                                    width: 500,
+                                    maxWidth: '100%',
+                                }}
+                            >
                                 <Controller
-                                    name="rw"
+                                    name="telepon"
                                     control={control}
                                     defaultValue=""
-                                    render={({ field }) => <Select
-                                        fullWidth 
-                                        labelId="rw-label"
-                                        id="rw"
-                                        {...field}
-                                        label="RW"
-                                        defaultValue={1}
-                                        sx={{ height: '40px'}}
-                                    >
-                                        <MenuItem value="1">01</MenuItem>
-                                        <MenuItem value="2">02</MenuItem>
-                                        <MenuItem value="3">03</MenuItem>
-                                        <MenuItem value="4">04</MenuItem>
-                                        <MenuItem value="5">05</MenuItem>
-                                        <MenuItem value="6">06</MenuItem>
-                                        <MenuItem value="7">07</MenuItem>
-                                        <MenuItem value="8">08</MenuItem>
-                                        <MenuItem value="9">09</MenuItem>
-                                        <MenuItem value="10">10</MenuItem>
-                                        <MenuItem value="11">11</MenuItem>
-                                        <MenuItem value="12">12</MenuItem>
-                                    </Select>}
+                                    rules={{
+                                        required: 'Kolom Nomer Telepon harus diisi',
+                                        min: { value: 1, message: "Nomor Telepon must be at least 1" },
+                                    }}
+                                    render={({ field }) => <TextField fullWidth {...field} label="Nomor Telepon" variant="outlined"
+                                        type='number'
+                                        error={Boolean(errors.telepon)}
+                                        helperText={errors.telepon && errors.telepon.message}
+                                    />}
                                 />
-                            </FormControl>
-                        </Box>
+                            </Box>
 
-                        <Box
-                            sx={{
-                                width: 500,
-                                maxWidth: '100%',
-                            }}
-                        >
-                        <FormControl variant="outlined" fullWidth>
-                                <InputLabel id="role-label">Petugas</InputLabel>
+                            <Box
+                                sx={{
+                                    width: 500,
+                                    maxWidth: '100%',
+                                }}
+                            >
                                 <Controller
-                                    name="role"
+                                    name="alamat"
                                     control={control}
                                     defaultValue=""
-                                    render={({ field }) => <Select
-                                        fullWidth 
-                                        labelId="role-label"
-                                        id="role"
-                                        {...field}
-                                        label="Petugas"
-                                        defaultValue={1}
-                                        sx={{ height: '40px'}}
-                                    >
-                                        <MenuItem value="kader">Kader</MenuItem>
-                                        <MenuItem value="bidan">Bidan</MenuItem>
-
-                                    </Select>}
+                                    rules={{
+                                        required: 'Kolom Alamat harus diisi',
+                                    }}
+                                    render={({ field }) =>
+                                        <TextField
+                                            fullWidth
+                                            id="outlined-multiline-static"
+                                            label="Alamat"
+                                            multiline
+                                            rows={4}
+                                            {...field}
+                                            variant="outlined"
+                                            error={Boolean(errors.alamat)}
+                                            helperText={errors.alamat && errors.alamat.message}
+                                        />}
                                 />
-                            </FormControl>
-                        </Box>
-                        
-                        <Box
-                            sx={{
-                                width: 500,
-                                maxWidth: '100%',
-                            }}
-                        >
-                            <Controller
-                                name="telepon"
-                                control={control}
-                                defaultValue=""
-                                render={({ field }) => <TextField fullWidth {...field} label="Nomor Telepon" variant="outlined" />}
-                            />
-                        </Box>
+                            </Box>
+                            <Box
+                                display="flex"
+                                justifyContent="center"
+                                alignItems="center"
+                                mt={3}
+                            >
 
-                        <Box
-                            sx={{
-                                width: 500,
-                                maxWidth: '100%',
-                            }}
-                        >
-                        <Controller
-                            name="alamat"
-                            control={control}
-                            defaultValue=""
-                            render={({ field }) =>
-                            <TextField
-                                fullWidth 
-                                id="outlined-multiline-static"
-                                label="Alamat"
-                                multiline
-                                rows={4}
-                                {...field}
-                            />}
-                        />
-                        </Box>
-                        <Box
-                            display="flex"
-                            justifyContent="center"
-                            alignItems="center"
-                            mt={3}
-                        >
-
-                            <Grid container spacing={2}>
-                                <Grid item>
-                                <Button variant="contained" id='btn-back'
-                                    href="/user"
-                                >
-                                    Kembali
-                                </Button>
+                                <Grid container spacing={2}>
+                                    <Grid item>
+                                        <Button variant="contained" id='btn-back'
+                                            href="/user"
+                                        >
+                                            Kembali
+                                        </Button>
+                                    </Grid>
+                                    <Grid item>
+                                        <Button variant="contained" id='btn-add-data-anak' type='submit'>
+                                            Tambah Data User
+                                        </Button>
+                                    </Grid>
                                 </Grid>
-                                <Grid item>
-                                <Button variant="contained" id='btn-add-data-anak' type='submit'>
-                                    Tambah Data User
-                                </Button>
-                                </Grid>
-                            </Grid>
-                        </Box>
+                            </Box>
                         </Stack>
                     </Grid>
                 </Grid>

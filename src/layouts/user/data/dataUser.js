@@ -6,6 +6,7 @@ import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
 import MDBadge from "components/MDBadge";
 import Swal from 'sweetalert2';
+import { Link } from "react-router-dom";
 
 import useDeleteData from "hooks/useDelete";
 
@@ -75,26 +76,37 @@ export default function DataUser() {
         rw: data.rw,
         action: (
           <MDBox>
-            <MDTypography
-              component="a"
-              href={`/user/edit/${data.id}`}
-              variant="caption"
-              color="text"
-              fontWeight="medium"
-              style={{ marginRight: 8 }}
-            >
-              Edit
-            </MDTypography>
-            <MDTypography
-              component="button"
-              variant="caption"
-              color="error"
-              fontWeight="medium"
-              onClick={() => handleDelete(data.id)}
-            >
-              Delete
-            </MDTypography>
-          </MDBox>
+          <MDTypography
+            component={Link}
+            to={`/user/detail/${data.id}`}
+            variant="caption"
+            color="info"
+            fontWeight="medium"
+            style={{ marginRight: 8 }}
+          >
+            View
+          </MDTypography>
+          <MDTypography
+            component="a"
+            href={`/user/edit/${data.id}`}
+            variant="caption"
+            color="warning"
+            fontWeight="medium"
+            style={{ marginRight: 8 }}
+          >
+            Edit
+          </MDTypography>
+          <MDTypography
+            component={Link}
+            variant="caption"
+            color="error"
+            fontWeight="medium"
+            style={{ marginRight: 8 }}
+            onClick={() => handleDelete(data.id)} // Call handleDelete function on click
+          >
+            Delete
+          </MDTypography>
+        </MDBox>
         ),
       }))
       return { columns: [

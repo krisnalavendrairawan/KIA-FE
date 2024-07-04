@@ -32,6 +32,8 @@ const EditPenimbangan = ({ open, handleClose, selectedId }) => {
     const [previousWeight, setPreviousWeight] = useState(null);
     const [previousMonth, setPreviousMonth] = useState(null);
     const [jenisKelamin, setJenisKelamin] = useState(null);
+    const [bulanPenimbangan, setBulanPenimbangan] = useState(null);
+    
 
     const { control, handleSubmit, reset, watch, setValue } = useForm();
 
@@ -106,7 +108,7 @@ useEffect(() => {
         const id_kader = localStorage.getItem('id_user');
         try {
             const response = await axios.get(`http://127.0.0.1:8000/api/getPenimbanganByNik/${nikAnak}`);
-            const bulan_ke = response.data.penimbangan.bulan_ke;          
+            const bulan_ke = response.data.penimbangan.bulan_ke;
             const formData = {
                 nik_anak: nikAnak,
                 id_kader: id_kader,
