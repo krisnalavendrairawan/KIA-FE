@@ -6,10 +6,9 @@ import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
 import Swal from 'sweetalert2';
 import { Link } from "react-router-dom";
-import { format } from 'date-fns'; // Import date-fns format function
+import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
 import { useNavigate } from "react-router-dom";
-
 
 // Images
 import team2 from "assets/images/team-2.jpg";
@@ -49,15 +48,12 @@ export default function DataAnak() {
           }
         })
           .then((response) => {
-            // Tampilkan pesan sukses jika diperlukan
             Swal.fire('Sukses!', 'Data anak berhasil dihapus.', 'success');
             //refresh halaman
             window.location.reload();
-            // Kemungkinan perlu memperbarui UI setelah penghapusan
           })
           .catch((error) => {
             console.error("Error deleting data: ", error);
-            // Tampilkan pesan kesalahan jika diperlukan
             Swal.fire('Gagal!', 'Terjadi kesalahan saat menghapus data anak.', 'error');
           });
       }
@@ -96,19 +92,18 @@ export default function DataAnak() {
     nama_ayah: PropTypes.string.isRequired,
   };
 
-  // Map fetched data to the required format for rows
   const rows = datas.map((data, index) => ({
-    nama_anak: <Anak image={team2} nama_anak={data.nama_anak} nik={String(data.nik)} />, // Konversi menjadi string di sini
+    nama_anak: <Anak image={team2} nama_anak={data.nama_anak} nik={String(data.nik)} />,
     orang_tua: <Parent nama_ibu={data.nama_ibu} nama_ayah={data.nama_ayah} />,
-    nik: String(data.nik), // Juga konversi di sini
+    nik: String(data.nik),
     no_kk: data.no_kk,
     nama_ayah: data.nama_ayah,
     anak_ke: data.anak_ke,
-    tanggal_lahir: data.tanggal_lahir ? format(new Date(data.tanggal_lahir), 'dd MMMM yyyy', { locale: id }) : '', // Format tanggal
+    tanggal_lahir: data.tanggal_lahir ? format(new Date(data.tanggal_lahir), 'dd MMMM yyyy', { locale: id }) : '',
     jenis_kelamin: data.jenis_kelamin,
-    bb_lahir: `${data.bb_lahir} kg`, // Tambahkan satuan "kg"
-    pb_lahir: `${data.pb_lahir} cm`, // Tambahkan satuan "cm"
-    alamat: data.alamat,
+    bb_lahir: `${data.bb_lahir} kg`,
+    pb_lahir: `${data.pb_lahir} cm`,
+    alamat: `${data.alamat} RT ${data.rt}/RW ${data.rw}`,
     no_hp_ortu: data.no_hp_ortu,
     action: (
       <MDBox>
@@ -138,7 +133,7 @@ export default function DataAnak() {
           color="error"
           fontWeight="medium"
           style={{ marginRight: 8 }}
-          onClick={() => handleDelete(data.nik)} // Call handleDelete function on click
+          onClick={() => handleDelete(data.nik)}
         >
           Delete
         </MDTypography>
@@ -150,16 +145,11 @@ export default function DataAnak() {
     columns: [
       { Header: "Nama Anak", accessor: "nama_anak", width: "45%", align: "left" },
       { Header: "Orang Tua", accessor: "orang_tua", align: "left" },
-      // { Header: "nik", accessor: "nik", align: "left" },
-      // { Header: "No KK", accessor: "no_kk", align: "center" },
-      // { Header: "nama_ayah", accessor: "nama_ayah", align: "center" },
-      // { Header: "Anak Ke", accessor: "anak_ke", align: "center" },
       { Header: "Tanggal Lahir", accessor: "tanggal_lahir", align: "center" },
       { Header: "Jenis Kelamin", accessor: "jenis_kelamin", align: "center" },
       { Header: "Berat Badan Lahir", accessor: "bb_lahir", align: "center" },
       { Header: "Panjang Badan Lahir", accessor: "pb_lahir", align: "center" },
       { Header: "Alamat", accessor: "alamat", align: "center" },
-      // { Header: "No HP Ortu", accessor: "no_hp_ortu", align: "center" },
       { Header: "Aksi", accessor: "action", align: "center" },
     ],
     rows: rows

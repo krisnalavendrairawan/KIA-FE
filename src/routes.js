@@ -77,6 +77,7 @@ import ScaleIcon from '@mui/icons-material/Scale';
 import MedicalInformationIcon from '@mui/icons-material/MedicalInformation';
 import VaccinesIcon from '@mui/icons-material/Vaccines';
 import icon from "assets/theme/components/icon";
+import Riwayat from "layouts/riwayat";
 
 const routes = [
   {
@@ -212,6 +213,17 @@ const routes = [
     key : "detail-medical",
     route : "/medical/detail/:id",
     component : <MedicalDetail />,
+  },
+
+  //Riwayat Kegiatan
+  {
+    type: "collapse",
+    name: "Riwayat Kegiatan",
+    key: "riwayat-kegiatan",
+    icon: <Icon fontSize="small">event</Icon>,
+    route: "/riwayat-kegiatan",
+    component : <Riwayat />,
+  
   },
 
         //Anak
