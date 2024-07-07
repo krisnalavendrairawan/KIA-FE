@@ -78,8 +78,18 @@ import MedicalInformationIcon from '@mui/icons-material/MedicalInformation';
 import VaccinesIcon from '@mui/icons-material/Vaccines';
 import icon from "assets/theme/components/icon";
 import Riwayat from "layouts/riwayat";
+import Home from "layouts/home";
 
 const routes = [
+  {
+    type: "title",
+    name: "Home",
+    key: "home",
+    route: "/home",
+    component: <Home />,
+  },
+
+
   {
     type: "collapse",
     name: "Dashboard",

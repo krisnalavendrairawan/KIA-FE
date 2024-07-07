@@ -1,0 +1,21 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f06292; /* Pink background */
+}
+
+.container {
+    text-align: center;
+    padding: 50px;
+}
+
+.container img {
+    width: 150px;
+    height: auto;
+}
+
+.title {
+    font-size: 2em;
+    color: white;
+    margin-top: 20px;
+}
