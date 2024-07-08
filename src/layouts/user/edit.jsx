@@ -9,8 +9,10 @@ import { validateRT, checkUsernameExistsEdit, checkEmailExistsEdit } from './uti
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Swal from 'sweetalert2';
+import SessionExpired from "layouts/authentication/log-out/session";
 
 const EditUser = () => {
+    SessionExpired();
     const [datas, setDatas] = useState({});
     const [loading, setLoading] = useState(true);
     const [showPassword, setShowPassword] = useState(false);

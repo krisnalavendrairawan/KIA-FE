@@ -15,9 +15,10 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 
 //utils
 import { validateNIK, validateRT, validateEmail, validatePasswordMatch, checkUsernameExists, checkEmailExists, checkNIKExists } from './utils/validateUtils';
-
+import SessionExpired from "layouts/authentication/log-out/session";
 
 const CreateUser = () => {
+    SessionExpired();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 

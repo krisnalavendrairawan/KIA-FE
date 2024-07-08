@@ -25,8 +25,10 @@ import bayiImage from "assets/images/penimbangan/bayi.png";
 import dataAnak from "./data/data";
 
 import React, { useEffect, useState } from 'react'
+import SessionExpired from "layouts/authentication/log-out/session";
 
 const CreateMedical = () => {
+    SessionExpired();
     const [data, setData] = useState([]);
     const [selectedChild, setSelectedChild] = useState(null);
     const { control, handleSubmit } = useForm();

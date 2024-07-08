@@ -22,14 +22,13 @@ import { useNavigate } from "react-router-dom";
 
 // Import dataUser
 import dataUser from "./data/dataUser";
+import SessionExpired from "layouts/authentication/log-out/session";
 
 
 
 const User = () => {
 
-    if (!localStorage.getItem('token')) {
-        window.location.href = '/authentication/sign-in';
-      }
+    SessionExpired();
       const navigate = useNavigate();
       const { columns, rows } = dataUser();
   

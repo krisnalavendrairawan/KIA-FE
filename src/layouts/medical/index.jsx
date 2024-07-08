@@ -14,6 +14,7 @@ import EditMedicalModal from './modal/edit';
 import useDeleteData from "hooks/useDelete";
 import { format } from 'date-fns'; // Import date-fns format function
 import { id } from 'date-fns/locale';
+import SessionExpired from "layouts/authentication/log-out/session";
 
 const MEDICAL_COLUMN = [
     'tgl_rujukan',
@@ -25,6 +26,7 @@ const MEDICAL_COLUMN = [
 ]
 
 const Medical = () => {
+    SessionExpired();
     const [medicalData, setMedicalData] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();

@@ -8,10 +8,12 @@ import LineChartIcon from '@mui/icons-material/ShowChart';
 import BackButton from 'components/BackButton';
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
+import SessionExpired from "layouts/authentication/log-out/session";
 
 const URL = 'http://127.0.0.1:8000/api';
 
 const GraphicChild = () => {
+    SessionExpired();
     const { nik } = useParams();
     const [weightData, setWeightData] = useState([]);
     const [heightData, setHeightData] = useState([]);

@@ -8,8 +8,10 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { format } from 'date-fns'; // Import date-fns format function
 import { id as idLocale } from 'date-fns/locale'; // Correct import for the locale
+import SessionExpired from "layouts/authentication/log-out/session";
 
 const DetailImunisasi = () => {
+    SessionExpired();
     const { id } = useParams();
     const [datas, setDatas] = useState(null);
 

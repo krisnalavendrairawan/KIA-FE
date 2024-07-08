@@ -11,10 +11,10 @@ import dayjs from 'dayjs';
 import { useState, useEffect } from 'react';
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout"
 import DashboardNavbar from "examples/Navbars/DashboardNavbar"
+import SessionExpired from "layouts/authentication/log-out/session";
 
 const EditAnak = () => {
-
-
+    SessionExpired();
 
     const [datas, setDatas] = useState(null);
 

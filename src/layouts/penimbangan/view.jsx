@@ -12,8 +12,10 @@ import { id as idLocale } from 'date-fns/locale';
 import { PDFViewer } from '@react-pdf/renderer';
 import MyDocument from './document/pdf';
 const URL = 'http://127.0.0.1:8000/api'
+import SessionExpired from "layouts/authentication/log-out/session";
 
 const DetailPenimbangan = () => {
+    SessionExpired();
     const { id } = useParams();
     const [datas, setDatas] = useState(null);
     const [showPdf, setShowPdf] = useState(false);

@@ -11,12 +11,14 @@ import profilesListData from "layouts/profile/data/profilesListData";
 import Grid from "@mui/material/Grid";
 import Divider from "@mui/material/Divider";
 import team3 from "assets/images/team-3.jpg";
+import SessionExpired from "layouts/authentication/log-out/session";
 
 
 
 import MDBox from "components/MDBox";
 
 const ProfilDetailUser = () => {
+    SessionExpired();
     const [data, setData] = useState([]);
     const [otherData, setOtherData] = useState([]);
     const { id } = useParams();
@@ -38,7 +40,7 @@ const ProfilDetailUser = () => {
             const filteredData = response.data.users.filter(user => user.id !== parseInt(id));
             setOtherData(filteredData);
             // console.log(filteredData);
-            
+
         } catch (error) {
             console.error(error);
         }

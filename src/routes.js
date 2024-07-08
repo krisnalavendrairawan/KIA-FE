@@ -79,6 +79,7 @@ import VaccinesIcon from '@mui/icons-material/Vaccines';
 import icon from "assets/theme/components/icon";
 import Riwayat from "layouts/riwayat";
 import Home from "layouts/home";
+import DetailForParent from "layouts/home/anak/anak";
 
 const routes = [
   {
@@ -267,6 +268,14 @@ const routes = [
     key : "detail-anak",
     route : "/anak/detail/:nik",
     component : <DetailAnak />,
+  },
+
+  //detial anak untuk orang tua
+  {
+    name : "detailAnak",
+    key : "detailAnak",
+    route : "/anak/:nik",
+    component : <DetailForParent />,
   },
   {
     name: "grafik-anak",

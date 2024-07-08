@@ -25,10 +25,11 @@
     import dataAnak from "./data/data";
 
     import React, { useEffect, useState } from 'react'
-
+    import SessionExpired from "layouts/authentication/log-out/session";
 
 
     const CreateImunisasi = () => {
+        SessionExpired();
         const [data, setData] = useState([]);
         const [selectedChild, setSelectedChild] = useState(null);
         const [jenisImunisasi, setJenisImunisasi] = useState('');

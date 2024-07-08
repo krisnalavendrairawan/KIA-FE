@@ -23,9 +23,11 @@ import MonitorWeightIcon from '@mui/icons-material/MonitorWeight';
 
 import React, { useEffect, useState } from 'react'
 import { Create } from "@mui/icons-material";
+import SessionExpired from "layouts/authentication/log-out/session";
 
 
 const CreatePenimbangan = () => {
+    SessionExpired();
     const navigate = useNavigate();
     const [data, setData] = useState([])
     const { control, handleSubmit, setValue, watch } = useForm();

@@ -15,11 +15,10 @@ import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
 import { useNavigate } from "react-router-dom";
 import dataAnak from "./data/dataAnak";
+import SessionExpired from "layouts/authentication/log-out/session";
 
 function Tables() {
-  if (!localStorage.getItem('token')) {
-    window.location.href = '/authentication/sign-in';
-  }
+  SessionExpired();
 
   const navigate = useNavigate();
   const { columns, rows } = dataAnak();

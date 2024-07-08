@@ -1,8 +1,13 @@
 import { useState } from "react";
-const logOut = () => {
-  localStorage.removeItem('token', 'id_user', 'user');
+import { useNavigate } from "react-router-dom";
 
-  window.location.href = '/authentication/sign-in';
+const logOut = () => {
+  const navigate = useNavigate();
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  localStorage.removeItem('id_user');
+
+  navigate('/authentication/sign-in');
 };
 
 export default logOut;

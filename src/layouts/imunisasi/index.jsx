@@ -17,6 +17,7 @@ import { format } from 'date-fns'; // Import date-fns format function
 import { id } from 'date-fns/locale';
 
 import './style.css';
+import SessionExpired from "layouts/authentication/log-out/session";
 
 const IMUNISASI_COLUMN = [
     'tgl_imunisasi',
@@ -28,6 +29,7 @@ const IMUNISASI_COLUMN = [
 
 
 const Imunisasi = () => {
+    SessionExpired();
     const [dataImunisasi, setDataImunisasi] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();

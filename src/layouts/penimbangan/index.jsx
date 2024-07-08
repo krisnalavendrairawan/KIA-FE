@@ -14,6 +14,7 @@ import EditPenimbanganModal from './modal/edit'; // Import EditPenimbanganModal 
 import useDeleteData from "hooks/useDelete"; // Import useDeleteData custom hook
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
+import SessionExpired from "layouts/authentication/log-out/session";
 
 const VISIBLE_FIELDS = [
     'tgl_penimbangan',
@@ -28,6 +29,7 @@ const VISIBLE_FIELDS = [
 ];
 
 const Penimbangan = () => {
+    SessionExpired();
     const [dataPenimbangan, setDataPenimbangan] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
