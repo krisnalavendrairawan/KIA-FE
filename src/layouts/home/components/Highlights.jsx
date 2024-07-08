@@ -5,46 +5,46 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import AutoFixHighRoundedIcon from '@mui/icons-material/AutoFixHighRounded';
-import ConstructionRoundedIcon from '@mui/icons-material/ConstructionRounded';
-import QueryStatsRoundedIcon from '@mui/icons-material/QueryStatsRounded';
-import SettingsSuggestRoundedIcon from '@mui/icons-material/SettingsSuggestRounded';
-import SupportAgentRoundedIcon from '@mui/icons-material/SupportAgentRounded';
-import ThumbUpAltRoundedIcon from '@mui/icons-material/ThumbUpAltRounded';
+import VaccinesIcon from '@mui/icons-material/Vaccines';
+import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
+import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
+import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
+import LocalPharmacyIcon from '@mui/icons-material/LocalPharmacy';
+import SickIcon from '@mui/icons-material/Sick';
 
 const items = [
     {
-        icon: <SettingsSuggestRoundedIcon />,
+        icon: <VaccinesIcon />,
         title: 'BCG (Bacillus Calmette-Guérin)',
         description:
             'Mencegah tuberkulosis (TB).',
     },
     {
-        icon: <ConstructionRoundedIcon />,
+        icon: <LocalHospitalIcon />,
         title: 'Hepatitis B',
         description:
             'Mencegah infeksi virus hepatitis B yang bisa menyebabkan kerusakan hati.',
     },
     {
-        icon: <ThumbUpAltRoundedIcon />,
+        icon: <MedicalServicesIcon />,
         title: 'DPT (Difteri, Pertusis, Tetanus)',
         description:
             'Mencegah difteri, pertusis (batuk rejan), dan tetanus.',
     },
     {
-        icon: <AutoFixHighRoundedIcon />,
+        icon: <HealthAndSafetyIcon />,
         title: 'Polio',
         description:
             'Mencegah penyakit polio yang dapat menyebabkan kelumpuhan.',
     },
     {
-        icon: <SupportAgentRoundedIcon />,
+        icon: <LocalPharmacyIcon />,
         title: 'Hib (Haemophilus influenzae tipe b)',
         description:
             'Mencegah infeksi bakteri Haemophilus influenzae tipe b yang dapat menyebabkan meningitis, pneumonia, dan infeksi lainnya.',
     },
     {
-        icon: <QueryStatsRoundedIcon />,
+        icon: <SickIcon />,
         title: 'Campak',
         description:
             'Mencegah penyakit campak yang dapat menyebabkan komplikasi serius.',

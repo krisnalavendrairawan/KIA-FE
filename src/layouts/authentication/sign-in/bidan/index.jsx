@@ -4,10 +4,12 @@ import { useState } from "react";
 import axios from "axios";
 import { useForm, Controller, SubmitHandler } from "react-hook-form"
 import TextField from '@mui/material/TextField';
+import { Button } from "@mui/material";
 import { token } from "index";
 import { useNavigate } from "react-router-dom";
 //import sweetalert2 
 import Swal from 'sweetalert2';
+import ReplyAllIcon from '@mui/icons-material/ReplyAll';
 
 // react-router-dom components
 import { Link } from "react-router-dom";
@@ -31,15 +33,15 @@ import DefaultNavbar from "examples/Navbars/DefaultNavbar";
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 
 function Basic() {
-  if(localStorage.getItem('token')) window.location.href = '/dashboard';
+  if (localStorage.getItem('token')) window.location.href = '/dashboard';
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
-  const {control, handleSubmit} = useForm();
-  const onSubmit = async (data) => {  
-    try{
+  const { control, handleSubmit } = useForm();
+  const onSubmit = async (data) => {
+    try {
       //cek apakah username dan password di isi atau tidak jika tidak maka akan muncul alert
-      if(data.username === "" || data.password === ""){
+      if (data.username === "" || data.password === "") {
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
@@ -47,17 +49,17 @@ function Basic() {
         })
       }
 
-      else{
+      else {
         const response = await axios.post('http://127.0.0.1:8000/api/login', data, {
           headers: {
             'Content-Type': 'application/json',
           }
         }).then((response) => {
-          if(response.data.role === "bidan"){
+          if (response.data.role === "bidan") {
             localStorage.setItem('token', response.data.token);
             localStorage.setItem('user', JSON.stringify(response.data.user));
             navigate('/admin/dashboard');
-          }else{
+          } else {
             Swal.fire({
               icon: 'error',
               title: 'Login Gagal',
@@ -75,7 +77,7 @@ function Basic() {
       }
 
 
-    }catch(error){
+    } catch (error) {
       console.log(error);
     }
 
@@ -83,7 +85,7 @@ function Basic() {
 
   return (
     <MDBox>
-        <DefaultNavbar
+      <DefaultNavbar
         action={{
           type: "internal",
           route: "/authentication/sign-in",
@@ -91,8 +93,8 @@ function Basic() {
           color: "dark",
         }}
       />
-        <BasicLayout image={bgImage}>
-        
+      <BasicLayout image={bgImage}>
+
         <Card>
           <MDBox
             variant="gradient"
@@ -112,20 +114,20 @@ function Basic() {
           <MDBox pt={4} pb={3} px={3}>
             <MDBox component="form" role="form" onSubmit={handleSubmit(onSubmit)}>
               <MDBox mb={2}>
-              <Controller
+                <Controller
                   name="username"
                   control={control}
                   defaultValue=""
-                  render={({ field }) => <TextField fullWidth {...field} label="Username" variant="outlined"  />}
-              />
+                  render={({ field }) => <TextField fullWidth {...field} label="Username" variant="outlined" />}
+                />
               </MDBox>
               <MDBox mb={2}>
-              <Controller
-                   name="password"
+                <Controller
+                  name="password"
                   control={control}
                   defaultValue=""
                   render={({ field }) => <TextField fullWidth {...field} label="Password" variant="outlined" type="password" />}
-              />
+                />
               </MDBox>
               <MDBox display="flex" alignItems="center" ml={-1}>
                 <Switch checked={rememberMe} onChange={handleSetRememberMe} />
@@ -145,14 +147,14 @@ function Basic() {
                 </MDButton>
               </MDBox>
               <Grid
-              mt={3} mb={1} textAlign="center"
-              container
-              direction="column"
-              justifyContent="center"
-              alignItems="center"
+                mt={3} mb={1} textAlign="center"
+                container
+                direction="column"
+                justifyContent="center"
+                alignItems="center"
               >
-  
-              
+
+
                 {/* <MDTypography variant="button" color="text">
                   {" "}
                   <MDTypography
@@ -168,19 +170,14 @@ function Basic() {
                 </MDTypography> */}
                 <MDTypography variant="button" color="text" >
                   {" "}
-                  <MDTypography
-                    component={Link}
-                    to="/authentication/sign-up"
-                    variant="button"
-                    color="info"
-                    fontWeight="medium"
-                    textGradient
-                  >
-                    Registrasi Bidan
-                  </MDTypography>
+                  <Button variant="contained" id='back-button'
+                    href="/home">
+                    <ReplyAllIcon sx={{ marginRight: 1 }} />
+                    Kembali
+                  </Button>
                 </MDTypography>
-                </Grid>
-              </MDBox>
+              </Grid>
+            </MDBox>
           </MDBox>
         </Card>
       </BasicLayout>
