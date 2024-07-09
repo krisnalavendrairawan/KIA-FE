@@ -15,6 +15,8 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import Typography from '@mui/material/Typography';
 
+import ReplyAllIcon from '@mui/icons-material/ReplyAll';
+
 import PageLayout from 'examples/LayoutContainers/PageLayout';
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -23,6 +25,10 @@ import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
+
+import axios from 'axios';
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
 import AddressForm from './component/AddressForm';
 import getCheckoutTheme from './component/getCheckoutTheme';
@@ -57,11 +63,11 @@ function ToggleCustomTheme({ showCustomTheme, toggleCustomTheme }) {
                     },
                 }}
             >
-                <ToggleButton value>
+                {/* <ToggleButton value>
                     <AutoAwesomeRoundedIcon sx={{ fontSize: '20px', mr: 1 }} />
                     Custom theme
                 </ToggleButton>
-                <ToggleButton value={false}>Material Design 2</ToggleButton>
+                <ToggleButton value={false}>Material Design 2</ToggleButton> */}
             </ToggleButtonGroup>
         </Box>
     );
@@ -96,12 +102,25 @@ function getStepContent(step) {
     }
 }
 
+const url = 'http://127.0.0.1:8000/api';
 export default function Checkout() {
-    const [mode, setMode] = React.useState('light');
-    const [showCustomTheme, setShowCustomTheme] = React.useState(true);
+    const { nik } = useParams();
+    const [data, setData] = useState([]);
+    const [mode, setMode] = useState('light');
+    const [showCustomTheme, setShowCustomTheme] = useState(false); // Set default to false
     const checkoutTheme = createTheme(getCheckoutTheme(mode));
     const defaultTheme = createTheme({ palette: { mode } });
-    const [activeStep, setActiveStep] = React.useState(0);
+    const [activeStep, setActiveStep] = useState(0);
+
+    const fetchData = async () => {
+        const response = await axios.get(`${url}/getAnak/${nik}`);
+        setData(response.data.anak);
+        // console.log(response.data.anak)
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, [nik]);
 
     const toggleColorMode = () => {
         setMode((prev) => (prev === 'dark' ? 'light' : 'dark'));
@@ -141,29 +160,7 @@ export default function Checkout() {
                             gap: 4,
                         }}
                     >
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'end',
-                                height: 150,
-                            }}
-                        >
-                            <Button
-                                startIcon={<ArrowBackRoundedIcon />}
-                                component="a"
-                                href="/home"
-                                sx={{ ml: '-8px' }}
-                            >
-                                Back to
-                                <img
-                                    src={
-                                        'https://assets-global.website-files.com/61ed56ae9da9fd7e0ef0a967/61f12e6faf73568658154dae_SitemarkDefault.svg'
-                                    }
-                                    style={logoStyle}
-                                    alt="Sitemark's logo"
-                                />
-                            </Button>
-                        </Box>
+
                         <Box
                             sx={{
                                 display: 'flex',
@@ -173,7 +170,11 @@ export default function Checkout() {
                                 maxWidth: 500,
                             }}
                         >
-                            <Info totalPrice={activeStep >= 2 ? '$144.97' : '$134.98'} />
+                            <Info data={data} />
+                            <Button sx={{ marginTop: '30px' }} variant="contained" id='back-button' href="/home">
+                                <ReplyAllIcon sx={{ marginRight: 1 }} />
+                                Kembali
+                            </Button>
                         </Box>
                     </Grid>
                     <Grid
@@ -238,26 +239,7 @@ export default function Checkout() {
                                 }}
                             >
                                 <ToggleColorMode mode={mode} toggleColorMode={toggleColorMode} />
-                                <Stepper
-                                    id="desktop-stepper"
-                                    activeStep={activeStep}
-                                    sx={{
-                                        width: '100%',
-                                        height: 40,
-                                    }}
-                                >
-                                    {steps.map((label) => (
-                                        <Step
-                                            sx={{
-                                                ':first-child': { pl: 0 },
-                                                ':last-child': { pr: 0 },
-                                            }}
-                                            key={label}
-                                        >
-                                            <StepLabel>{label}</StepLabel>
-                                        </Step>
-                                    ))}
-                                </Stepper>
+                                Jadwal Kegiatan Posyandu Selanjutnya
                             </Box>
                         </Box>
                         <Card
@@ -277,13 +259,13 @@ export default function Checkout() {
                             >
                                 <div>
                                     <Typography variant="subtitle2" gutterBottom>
-                                        Selected products
+                                        Nama Anak
                                     </Typography>
                                     <Typography variant="body1">
-                                        {activeStep >= 2 ? '$144.97' : '$134.98'}
+                                        {data.nama_anak || 'Loading...'}
                                     </Typography>
                                 </div>
-                                <InfoMobile totalPrice={activeStep >= 2 ? '$144.97' : '$134.98'} />
+                                <InfoMobile data={data} />
                             </CardContent>
                         </Card>
                         <Box
@@ -381,17 +363,6 @@ export default function Checkout() {
                                                 Previous
                                             </Button>
                                         )}
-
-                                        <Button
-                                            variant="contained"
-                                            endIcon={<ChevronRightRoundedIcon />}
-                                            onClick={handleNext}
-                                            sx={{
-                                                width: { xs: '100%', sm: 'fit-content' },
-                                            }}
-                                        >
-                                            {activeStep === steps.length - 1 ? 'Place order' : 'Next'}
-                                        </Button>
                                     </Box>
                                 </React.Fragment>
                             )}

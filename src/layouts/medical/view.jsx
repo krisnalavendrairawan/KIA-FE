@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-import { Alert, Grid, Paper, Typography, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button } from "@mui/material";
+import { Alert, Grid, Paper, Typography, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Box } from "@mui/material";
 import ReplyAllIcon from '@mui/icons-material/ReplyAll';
 import InfoIcon from '@mui/icons-material/Info';
 import axios from "axios";
+import PrintIcon from '@mui/icons-material/Print';
+import Modal from '@mui/material/Modal';
+import { PDFViewer } from '@react-pdf/renderer';
+import MyDocument from './document/pdf';
 import { useParams } from "react-router-dom";
 import { format } from 'date-fns'; // Import date-fns format function
 import { id as idLocale } from 'date-fns/locale'; // Correct import for the locale
@@ -15,6 +19,7 @@ const MedicalDetail = () => {
     SessionExpired();
     const { id } = useParams();
     const [datas, setDatas] = useState(null);
+    const [showPdf, setShowPdf] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -24,18 +29,18 @@ const MedicalDetail = () => {
 
                 const dataWithId = {
                     id: data.id_penyakit,
-                    nik_anak : data.anak ? data.anak.nik : '',
-                    nama_anak : data.anak ? data.anak.nama_anak : '',
+                    nik_anak: data.anak ? data.anak.nik : '',
+                    nama_anak: data.anak ? data.anak.nama_anak : '',
                     tgl_rujukan: data.tgl_rujukan ? format(new Date(data.tgl_rujukan), 'dd MMMM yyyy', { locale: idLocale }) : '',
                     jenis_penyakit: data.jenis_penyakit ? data.jenis_penyakit : '',
-                    rujukan : data.rujukan ? data.rujukan : '',
-                    saran : data.saran ? data.saran : '',
-                    id_kader : data.user ? data.user.id : '',
-                    nama_ibu : data.anak ? data.anak.nama_ibu : '',
-                    nama_ayah : data.anak ? data.anak.nama_ayah : '',
-                    alamat : data.anak ? data.anak.alamat : '',
-                    tanggal_lahir : data.anak ? format(new Date(data.anak.tanggal_lahir), 'dd MMMM yyyy', { locale: idLocale }) : '',
-                    jenis_kelamin : data.anak ? data.anak.jenis_kelamin : ''
+                    rujukan: data.rujukan ? data.rujukan : '',
+                    saran: data.saran ? data.saran : '',
+                    id_kader: data.user ? data.user.id : '',
+                    nama_ibu: data.anak ? data.anak.nama_ibu : '',
+                    nama_ayah: data.anak ? data.anak.nama_ayah : '',
+                    alamat: data.anak ? data.anak.alamat : '',
+                    tanggal_lahir: data.anak ? format(new Date(data.anak.tanggal_lahir), 'dd MMMM yyyy', { locale: idLocale }) : '',
+                    jenis_kelamin: data.anak ? data.anak.jenis_kelamin : ''
 
                 }
                 setDatas(dataWithId);
@@ -46,6 +51,14 @@ const MedicalDetail = () => {
         };
         fetchData();
     }, [id]);
+
+    const handleExport = () => {
+        setShowPdf(true);
+    };
+
+    const handleClose = () => {
+        setShowPdf(false);
+    };
 
     return (
         <DashboardLayout>
@@ -61,39 +74,39 @@ const MedicalDetail = () => {
                         </Typography>
                         <Divider />
                         {datas ? (
-                                <Table>
-                                    <TableBody>
-                                        <TableRow>
-                                            <TableCell><strong>Nama</strong></TableCell>
-                                            <TableCell>{datas.nama_anak}</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell><strong>NIK Anak</strong></TableCell>
-                                            <TableCell>{datas.nik_anak}</TableCell>
-                                        </TableRow>
+                            <Table>
+                                <TableBody>
+                                    <TableRow>
+                                        <TableCell><strong>Nama</strong></TableCell>
+                                        <TableCell>{datas.nama_anak}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell><strong>NIK Anak</strong></TableCell>
+                                        <TableCell>{datas.nik_anak}</TableCell>
+                                    </TableRow>
 
-                                        <TableRow>
-                                            <TableCell><strong>Tanggal Lahir</strong></TableCell>
-                                            <TableCell>{datas.tanggal_lahir}</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell><strong>Jenis Kelamin</strong></TableCell>
-                                            <TableCell>{datas.jenis_kelamin}</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell><strong>Nama Ibu</strong></TableCell>
-                                            <TableCell>{datas.nama_ibu}</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell><strong>Nama Ayah</strong></TableCell>
-                                            <TableCell>{datas.nama_ayah}</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell><strong>Alamat</strong></TableCell>
-                                            <TableCell>{datas.alamat}</TableCell>
-                                        </TableRow>
-                                    </TableBody>
-                                </Table>
+                                    <TableRow>
+                                        <TableCell><strong>Tanggal Lahir</strong></TableCell>
+                                        <TableCell>{datas.tanggal_lahir}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell><strong>Jenis Kelamin</strong></TableCell>
+                                        <TableCell>{datas.jenis_kelamin}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell><strong>Nama Ibu</strong></TableCell>
+                                        <TableCell>{datas.nama_ibu}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell><strong>Nama Ayah</strong></TableCell>
+                                        <TableCell>{datas.nama_ayah}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell><strong>Alamat</strong></TableCell>
+                                        <TableCell>{datas.alamat}</TableCell>
+                                    </TableRow>
+                                </TableBody>
+                            </Table>
                         ) : (
                             <Typography variant="body1" style={{ marginTop: '10px' }}>
                                 Loading...
@@ -108,26 +121,26 @@ const MedicalDetail = () => {
                         </Typography>
                         <Divider />
                         {datas ? (
-                                <Table>
-                                    <TableBody>
-                                        <TableRow>
-                                            <TableCell><strong>Tanggal Rujukan</strong></TableCell>
-                                            <TableCell>{datas.tgl_rujukan}</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell><strong>Jenis Penyakit</strong></TableCell>
-                                            <TableCell>{datas.jenis_penyakit}</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell><strong>Tempat Rujukan</strong></TableCell>
-                                            <TableCell>{datas.rujukan}</TableCell>
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell><strong>Saran Dokter</strong></TableCell>
-                                            <TableCell>{datas.saran}</TableCell>
-                                        </TableRow>
-                                    </TableBody>
-                                </Table>
+                            <Table>
+                                <TableBody>
+                                    <TableRow>
+                                        <TableCell><strong>Tanggal Rujukan</strong></TableCell>
+                                        <TableCell>{datas.tgl_rujukan}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell><strong>Jenis Penyakit</strong></TableCell>
+                                        <TableCell>{datas.jenis_penyakit}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell><strong>Tempat Rujukan</strong></TableCell>
+                                        <TableCell>{datas.rujukan}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell><strong>Saran Dokter</strong></TableCell>
+                                        <TableCell>{datas.saran}</TableCell>
+                                    </TableRow>
+                                </TableBody>
+                            </Table>
                         ) : (
                             <Typography variant="body1" style={{ marginTop: '10px' }}>
                                 Loading...
@@ -135,15 +148,38 @@ const MedicalDetail = () => {
                         )}
                     </Paper>
                     <Grid container spacing={2} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem', marginTop: '1rem' }}>
-                            <Grid item>
-                                <Button variant="contained" id='back-button'
-                                    href="/medical">
-                                    <ReplyAllIcon sx={{marginRight: 1}} />
-                                    Kembali
-                                </Button>
-                            </Grid>
+                        <Grid item>
+                            <Button variant="contained" id='back-button'
+                                href="/medical">
+                                <ReplyAllIcon sx={{ marginRight: 1 }} />
+                                Kembali
+                            </Button>
                         </Grid>
+                        <Grid item>
+                            <Button variant="contained" id="export-button" onClick={handleExport}>
+                                <PrintIcon sx={{ marginRight: 1 }} />
+                                Print
+                            </Button>
+                        </Grid>
+                    </Grid>
                 </Grid>
+                <Modal
+                    open={showPdf}
+                    onClose={handleClose}
+                    aria-labelledby="pdf-viewer-modal"
+                    aria-describedby="pdf-viewer-description"
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}
+                >
+                    <Box sx={{ width: '80%', height: '90%' }}>
+                        <PDFViewer style={{ width: '100%', height: '100%' }}>
+                            <MyDocument datas={datas} />
+                        </PDFViewer>
+                    </Box>
+                </Modal>
             </Grid>
         </DashboardLayout>
     );

@@ -80,6 +80,9 @@ import icon from "assets/theme/components/icon";
 import Riwayat from "layouts/riwayat";
 import Home from "layouts/home";
 import DetailForParent from "layouts/home/anak/anak";
+import DetailPenimbanganAnak from "layouts/home/anak/detailPenimbangan";
+import DetailImunisasiAnak from "layouts/home/anak/detailImunisasi";
+import GraphicChildAnak from "layouts/home/anak/detailGrafikAnak";
 
 const routes = [
   {
@@ -277,6 +280,26 @@ const routes = [
     route : "/anak/:nik",
     component : <DetailForParent />,
   },
+  {
+    name : "detailPenimbangan",
+    key : "detailPenimbangan",
+    route : "/penimbangan/:id",
+    component : <DetailPenimbanganAnak />,
+  },
+  {
+    name : "detailImunisasi",
+    key : "detailImunisasi",
+    route : "/imunisasi/:id",
+    component : <DetailImunisasiAnak />,
+  },
+  {
+    name: "grafik-anak",
+    key: "grafik-anak",
+    route: "/anak/grafik/:nik",
+    component: <GraphicChildAnak />,
+  },
+
+
   {
     name: "grafik-anak",
     key: "grafik-anak",

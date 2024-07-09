@@ -149,7 +149,7 @@ const MyDocument = ({ datas }) => (
             </View>
 
             <View style={styles.alert}>
-                <Text style={styles.textAlert}>HASIL PENIMBANGAN</Text>
+                <Text style={styles.textAlert}>HASIL IMUNISASI</Text>
             </View>
             <View style={styles.table}>
                 <View style={styles.tableRow}>
@@ -157,23 +157,16 @@ const MyDocument = ({ datas }) => (
                         <Text style={styles.tableCell}>Tanggal Penimbangan</Text>
                     </View>
                     <View style={styles.tableCol}>
-                        <Text style={styles.tableCell}>: {datas && datas.tgl_penimbangan}</Text>
+                        <Text style={styles.tableCell}>: {datas && datas.tgl_imunisasi}</Text>
                     </View>
                 </View>
+
                 <View style={styles.tableRow}>
                     <View style={styles.tableCol}>
-                        <Text style={styles.tableCell}>Berat Badan</Text>
+                        <Text style={styles.tableCell}>Jenis Imunisasi</Text>
                     </View>
                     <View style={styles.tableCol}>
-                        <Text style={styles.tableCell}>: {datas && `${datas.berat_badan} kg`}</Text>
-                    </View>
-                </View>
-                <View style={styles.tableRow}>
-                    <View style={styles.tableCol}>
-                        <Text style={styles.tableCell}>Tinggi Badan</Text>
-                    </View>
-                    <View style={styles.tableCol}>
-                        <Text style={styles.tableCell}>: {datas && `${datas.tinggi_badan} cm`}</Text>
+                        <Text style={styles.tableCell}>: {datas && datas.jenis_imunisasi}</Text>
                     </View>
                 </View>
                 <View style={styles.tableRow}>
@@ -181,31 +174,7 @@ const MyDocument = ({ datas }) => (
                         <Text style={styles.tableCell}>Usia</Text>
                     </View>
                     <View style={styles.tableCol}>
-                        <Text style={styles.tableCell}>: {datas && `${datas.usia} bulan`}</Text>
-                    </View>
-                </View>
-                <View style={styles.tableRow}>
-                    <View style={styles.tableCol}>
-                        <Text style={styles.tableCell}>Status Gizi</Text>
-                    </View>
-                    <View style={styles.tableCol}>
-                        <Text style={styles.tableCell}>: {datas && datas.status_gizi}</Text>
-                    </View>
-                </View>
-                <View style={styles.tableRow}>
-                    <View style={styles.tableCol}>
-                        <Text style={styles.tableCell}>Keterangan</Text>
-                    </View>
-                    <View style={styles.tableCol}>
-                        <Text style={styles.tableCell}>: {datas && datas.keterangan}</Text>
-                    </View>
-                </View>
-                <View style={styles.tableRow}>
-                    <View style={styles.tableCol}>
-                        <Text style={styles.tableCell}>Saran</Text>
-                    </View>
-                    <View style={styles.tableCol}>
-                        <Text style={styles.tableCell}>: {datas && datas.saran}</Text>
+                        <Text style={styles.tableCell}>: {datas && datas.usia} bulan</Text>
                     </View>
                 </View>
             </View>

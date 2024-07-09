@@ -22,6 +22,10 @@ import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 
+import axios from 'axios';
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+
 import AddressForm from './AddressForm';
 import getCheckoutTheme from './getCheckoutTheme';
 import Info from './Info';
@@ -29,6 +33,7 @@ import InfoMobile from './InfoMobile';
 import PaymentForm from './PaymentForm';
 import Review from './Review';
 import ToggleColorMode from './ToggleColorMode';
+import { useParams } from 'react-router-dom';
 
 function ToggleCustomTheme({ showCustomTheme, toggleCustomTheme }) {
   return (
@@ -94,12 +99,27 @@ function getStepContent(step) {
   }
 }
 
+const url = 'http://127.0.0.1:8000/api'
+
 export default function Checkout() {
-  const [mode, setMode] = React.useState('light');
-  const [showCustomTheme, setShowCustomTheme] = React.useState(true);
+  const { nik } = useParams();
+  const [data, setData] = useState([]);
+  const [mode, setMode] = useState('light');
+  const [showCustomTheme, setShowCustomTheme] = useState(true);
   const checkoutTheme = createTheme(getCheckoutTheme(mode));
   const defaultTheme = createTheme({ palette: { mode } });
-  const [activeStep, setActiveStep] = React.useState(0);
+  const [activeStep, setActiveStep] = useState(0);
+
+  const fetchData = async () => {
+    const response = await axios.get(`${url}/getAnak/${nik}`);
+    setData(response.data);
+    console.log(response.data)
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
 
   const toggleColorMode = () => {
     setMode((prev) => (prev === 'dark' ? 'light' : 'dark'));

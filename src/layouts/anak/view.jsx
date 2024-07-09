@@ -14,10 +14,8 @@ import ChildInfoTable2 from "./component/childInfoTable2";
 import ChildWeighingTable from "./component/ChildWeighingTable";
 import ChildImmunizationTable from "./component/ChildImmunizationTable";
 import BackButton from 'components/BackButton';
-import { PDFDownloadLink } from '@react-pdf/renderer';
 import ChildDetailPDF from './utils/pdf';
 import { PDFViewer } from '@react-pdf/renderer';
-import logoPosyandu from "assets/images/logoPosyandu.png";
 import SessionExpired from "layouts/authentication/log-out/session";
 
 const DetailAnak = () => {

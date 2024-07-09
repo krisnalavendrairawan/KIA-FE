@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-import { Alert, Grid, Paper, Typography, Divider, Table, TableBody, TableCell, TableRow, Button, Modal, Box } from "@mui/material";
-import InfoIcon from '@mui/icons-material/Info';
+import { Alert, Grid, Paper, Typography, Divider, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Box } from "@mui/material";
 import ReplyAllIcon from '@mui/icons-material/ReplyAll';
-import PrintIcon from '@mui/icons-material/Print';
+import InfoIcon from '@mui/icons-material/Info';
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { format } from 'date-fns';
-import { id as idLocale } from 'date-fns/locale';
+import PrintIcon from '@mui/icons-material/Print';
+import { Modal } from '@mui/material';
 import { PDFViewer } from '@react-pdf/renderer';
-import MyDocument from './document/pdf';
-const URL = 'http://127.0.0.1:8000/api'
+import MyDocument from './document/pdfImunisasi';
+import { format } from 'date-fns'; // Import date-fns format function
+import { id as idLocale } from 'date-fns/locale'; // Correct import for the locale
 import SessionExpired from "layouts/authentication/log-out/session";
+import PageLayout from 'examples/LayoutContainers/PageLayout';
+const url = 'http://127.0.0.1:8000/api'
 
-const DetailPenimbangan = () => {
+const DetailImunisasiAnak = () => {
     SessionExpired();
     const { id } = useParams();
     const [datas, setDatas] = useState(null);
@@ -23,29 +25,24 @@ const DetailPenimbangan = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`${URL}/getPenimbanganById/${id}`);
-                const data = response.data.penimbangan;
+                const response = await axios.get(`${url}/getImunisasiById/${id}`);
+                const data = response.data.imunisasi
                 const dataWithId = {
-                    id: data.id_penimbangan,
+                    id: data.id_imunisasi,
                     nik_anak: data.anak ? data.anak.nik : '',
                     nama_anak: data.anak ? data.anak.nama_anak : '',
-                    tgl_penimbangan: data.tgl_penimbangan ? format(new Date(data.tgl_penimbangan), 'dd MMMM yyyy', { locale: idLocale }) : '',
-                    berat_badan: data.berat_badan ? data.berat_badan : '',
-                    tinggi_badan: data.tinggi_badan ? data.tinggi_badan : '',
-                    status_gizi: data.status_gizi ? data.status_gizi : '',
-                    keterangan: data.keterangan ? data.keterangan : '',
-                    saran: data.saran ? data.saran : '',
+                    tgl_imunisasi: data.tgl_imunisasi ? format(new Date(data.tgl_imunisasi), 'dd MMMM yyyy', { locale: idLocale }) : '',
+                    jenis_imunisasi: data.jenis_imunisasi ? data.jenis_imunisasi : '',
+                    usia: data.usia ? data.usia : '',
                     nama_ibu: data.anak ? data.anak.nama_ibu : '',
                     nama_ayah: data.anak ? data.anak.nama_ayah : '',
                     alamat: data.anak ? data.anak.alamat : '',
-                    usia: data.anak ? data.usia : '',
                     tanggal_lahir: data.anak ? format(new Date(data.anak.tanggal_lahir), 'dd MMMM yyyy', { locale: idLocale }) : '',
                     jenis_kelamin: data.anak ? data.anak.jenis_kelamin : ''
-                };
-                console.log(dataWithId);
+                }
                 setDatas(dataWithId);
-            }
-            catch (error) {
+                console.log(response.data.imunisasi);
+            } catch (error) {
                 console.error(error);
             }
         };
@@ -61,10 +58,9 @@ const DetailPenimbangan = () => {
     };
 
     return (
-        <DashboardLayout>
-            <DashboardNavbar />
+        <PageLayout>
             <Alert variant="filled" icon={<InfoIcon fontSize="inherit" />} severity="info">
-                Detail Penimbangan Anak
+                Detail Imunisasi Anak
             </Alert>
             <Grid container spacing={3} style={{ padding: '20px' }}>
                 <Grid item xs={12} md={6}>
@@ -84,6 +80,7 @@ const DetailPenimbangan = () => {
                                         <TableCell><strong>NIK Anak</strong></TableCell>
                                         <TableCell>{datas.nik_anak}</TableCell>
                                     </TableRow>
+
                                     <TableRow>
                                         <TableCell><strong>Tanggal Lahir</strong></TableCell>
                                         <TableCell>{datas.tanggal_lahir}</TableCell>
@@ -107,56 +104,45 @@ const DetailPenimbangan = () => {
                                 </TableBody>
                             </Table>
                         ) : (
-                            <Alert severity="error">Data tidak ditemukan</Alert>
+                            <Typography variant="body1" style={{ marginTop: '10px' }}>
+                                Loading...
+                            </Typography>
                         )}
                     </Paper>
                 </Grid>
                 <Grid item xs={12} md={6}>
                     <Paper style={{ padding: '20px' }}>
                         <Typography variant="h6" gutterBottom>
-                            Informasi Penimbangan Anak
+                            Informasi Imunisasi Anak
                         </Typography>
                         <Divider />
                         {datas ? (
                             <Table>
                                 <TableBody>
                                     <TableRow>
-                                        <TableCell><strong>Tanggal Penimbangan</strong></TableCell>
-                                        <TableCell>{datas.tgl_penimbangan}</TableCell>
+                                        <TableCell><strong>Tanggal Imunisasi</strong></TableCell>
+                                        <TableCell>{datas.tgl_imunisasi}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell><strong>Jenis Imunisasi</strong></TableCell>
+                                        <TableCell>{datas.jenis_imunisasi}</TableCell>
                                     </TableRow>
                                     <TableRow>
                                         <TableCell><strong>Usia</strong></TableCell>
-                                        <TableCell>{datas.usia} bulan</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Berat Badan</strong></TableCell>
-                                        <TableCell>{datas.berat_badan} kg</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Tinggi Badan</strong></TableCell>
-                                        <TableCell>{datas.tinggi_badan} cm</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Status Gizi</strong></TableCell>
-                                        <TableCell>{datas.status_gizi}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Keterangan</strong></TableCell>
-                                        <TableCell>{datas.keterangan}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell><strong>Saran</strong></TableCell>
-                                        <TableCell>{datas.saran}</TableCell>
+                                        <TableCell>{datas.usia} Bulan</TableCell>
                                     </TableRow>
                                 </TableBody>
                             </Table>
                         ) : (
-                            <Alert severity="error">Data tidak ditemukan</Alert>
+                            <Typography variant="body1" style={{ marginTop: '10px' }}>
+                                Loading...
+                            </Typography>
                         )}
                     </Paper>
                     <Grid container spacing={2} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem', marginTop: '1rem' }}>
                         <Grid item>
-                            <Button variant="contained" id='back-button' href="/penimbangan">
+                            <Button variant="contained" id='back-button'
+                                href={`/anak/${datas ? datas.nik_anak : ''}`}>
                                 <ReplyAllIcon sx={{ marginRight: 1 }} />
                                 Kembali
                             </Button>
@@ -187,8 +173,8 @@ const DetailPenimbangan = () => {
                     </Box>
                 </Modal>
             </Grid>
-        </DashboardLayout>
+        </PageLayout>
     );
-}
+};
 
-export default DetailPenimbangan;
+export default DetailImunisasiAnak;

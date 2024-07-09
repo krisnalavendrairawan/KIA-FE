@@ -1,4 +1,3 @@
-// src/components/Features.js
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -16,53 +15,27 @@ import EmailIcon from '@mui/icons-material/Email';
 import DevicesRoundedIcon from '@mui/icons-material/DevicesRounded';
 import EdgesensorHighRoundedIcon from '@mui/icons-material/EdgesensorHighRounded';
 import ViewQuiltRoundedIcon from '@mui/icons-material/ViewQuiltRounded';
-import porsiMakanIbu from 'assets/images/porsiMakanIbu.png';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import ChildCountChart from './features/ChildCountChart';
+import { format } from 'date-fns';
+import { id as idLocale } from 'date-fns/locale';
 
 const url = "http://127.0.0.1:8000/api";
-
-const items = [
-    {
-        icon: <ViewQuiltRoundedIcon />,
-        title: 'Jadwal Kegiatan Posyandu',
-        description: 'Jadwal Kegiatan Posyandu di Posyandu Cibeusi.',
-        imageLight: ``,
-        imageDark: ``,
-        schedule: [
-            "Senin: 08:00 - 10:00",
-            "Rabu: 09:00 - 11:00",
-            "Jumat: 08:00 - 12:00"
-        ],
-        location: "Desa Cibeusi, Kecamatan Jatinangor, Kabupaten Sumedang"
-    },
-    {
-        icon: <EdgesensorHighRoundedIcon />,
-        title: 'Lokasi Posyandu',
-        description: 'This item could provide information about the mobile app version of the product.',
-        imageLight: ``,
-        imageDark: ``,
-    },
-    {
-        icon: <DevicesRoundedIcon />,
-        title: 'Jumlah Anak yang Terdaftar',
-        description: 'This item could let users know the product is available on all platforms, such as web, mobile, and desktop.',
-        imageLight: '',
-        imageDark: '',
-    },
-];
 
 export default function Features() {
     const [selectedItemIndex, setSelectedItemIndex] = useState(0);
     const [data, setData] = useState([]);
+    const [jadwal, setJadwal] = useState([]);
     const [childCount, setChildCount] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios.get(`${url}/getAnak`);
+                const responseJadwal = await axios.get(`${url}/getJadwal`);
                 setData(response.data.anak);
+                setJadwal(responseJadwal.data.jadwal);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -70,6 +43,33 @@ export default function Features() {
 
         fetchData();
     }, []);
+
+    const items = [
+        {
+            icon: <ViewQuiltRoundedIcon />,
+            title: 'Jadwal Kegiatan Posyandu',
+            description: 'Jadwal Kegiatan Posyandu di Posyandu Cibeusi.',
+            imageLight: ``,
+            imageDark: ``,
+            schedule: jadwal,
+            location: "Desa Cibeusi, Kecamatan Jatinangor, Kabupaten Sumedang"
+        },
+        {
+            icon: <EdgesensorHighRoundedIcon />,
+            title: 'Lokasi Posyandu',
+            description: 'This item could provide information about the mobile app version of the product.',
+            imageLight: ``,
+            imageDark: ``,
+        },
+        {
+            icon: <DevicesRoundedIcon />,
+            title: 'Jumlah Anak yang Terdaftar',
+            description: 'This item could let users know the product is available on all platforms, such as web, mobile, and desktop.',
+            imageLight: '',
+            imageDark: '',
+        },
+    ];
+
     const handleItemClick = (index) => {
         setSelectedItemIndex(index);
     };
@@ -111,14 +111,17 @@ export default function Features() {
                                     {selectedFeature.title}
                                 </Typography>
                                 {selectedFeature.schedule.map((item, index) => (
-                                    <Typography
-                                        key={index}
-                                        color="text.secondary"
-                                        variant="body2"
-                                        sx={{ my: 0.5 }}
-                                    >
-                                        {item}
-                                    </Typography>
+                                    <Box key={index} sx={{ my: 1 }}>
+                                        <Typography color="text.secondary" variant="body2">
+                                            Tanggal: {format(new Date(item.tgl_kegiatan), 'dd MMMM yyyy', { locale: idLocale })}
+                                        </Typography>
+                                        <Typography color="text.secondary" variant="body2">
+                                            Tempat: {item.tempat}
+                                        </Typography>
+                                        <Typography color="text.secondary" variant="body2">
+                                            Keterangan: {item.keterangan}
+                                        </Typography>
+                                    </Box>
                                 ))}
                             </Box>
                         ) : (
@@ -259,26 +262,25 @@ export default function Features() {
                         ))}
                     </Stack>
                 </Grid>
-                <Grid
-                    item
-                    xs={12}
-                    md={6}
-                    sx={{ display: { xs: 'none', sm: 'flex' }, width: '100%' }}
-                >
-                    {selectedFeature.schedule ? (
-                        <Box sx={{ p: 3 }}>
+
+                <Grid item xs={12} md={6}>
+                    {selectedFeature.title === 'Jadwal Kegiatan Posyandu' ? (
+                        <Box sx={{ px: 2, pb: 2 }}>
                             <Typography color="text.primary" variant="h5" fontWeight="bold">
                                 {selectedFeature.title}
                             </Typography>
                             {selectedFeature.schedule.map((item, index) => (
-                                <Typography
-                                    key={index}
-                                    color="text.secondary"
-                                    variant="body1"
-                                    sx={{ my: 0.5 }}
-                                >
-                                    {item}
-                                </Typography>
+                                <Box key={index} sx={{ my: 1 }}>
+                                    <Typography color="text.secondary" variant="body2">
+                                        Tanggal: {format(new Date(item.tgl_kegiatan), 'EEEE, dd MMMM yyyy', { locale: idLocale })}
+                                    </Typography>
+                                    <Typography color="text.secondary" variant="body2">
+                                        Tempat: {item.tempat}
+                                    </Typography>
+                                    <Typography color="text.secondary" variant="body2">
+                                        Keterangan: {item.keterangan}
+                                    </Typography>
+                                </Box>
                             ))}
                         </Box>
                     ) : selectedFeature.title === 'Lokasi Posyandu' ? (
