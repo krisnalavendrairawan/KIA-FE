@@ -62,6 +62,7 @@ const CreateAnak = () => {
         // console.log(dataAnak);
         axios.post('http://127.0.0.1:8000/api/createAnak', dataAnak)
             .then(response => {
+                const id_kader = localStorage.getItem('id_user');
                 const dataPenimbangan = {
                     tgl_penimbangan: dayjs(data.tanggal_lahir).format('YYYY-MM-DD'),
                     nik_anak: data.nik,
@@ -70,7 +71,7 @@ const CreateAnak = () => {
                     status_gizi: '-',
                     keterangan: '-',
                     saran: '-',
-                    id_kader: localStorage.getItem('id_user'),
+                    id_kader: id_kader,
                     usia: 0,
                     bulan_ke: 0,
                 }
@@ -239,7 +240,7 @@ const CreateAnak = () => {
                                             defaultValue='Laki-Laki'
                                             sx={{ height: '40px' }}
                                         >
-                                            <MenuItem value="Laki-laki">Laki-laki</MenuItem>
+                                            <MenuItem value="Laki-Laki">Laki-Laki</MenuItem>
                                             <MenuItem value="Perempuan">Perempuan</MenuItem>
                                         </Select>}
                                     />
@@ -351,27 +352,6 @@ const CreateAnak = () => {
                                 />
                             </Box>
 
-                            <Box
-                                sx={{
-                                    width: 500,
-                                    maxWidth: '100%',
-                                }}
-                            >
-                                <Controller
-                                    name="alamat"
-                                    control={control}
-                                    defaultValue=""
-                                    render={({ field }) =>
-                                        <TextField
-                                            fullWidth
-                                            id="outlined-multiline-static"
-                                            label="Alamat"
-                                            multiline
-                                            rows={4}
-                                            {...field}
-                                        />}
-                                />
-                            </Box>
                             <Box
                                 sx={{
                                     width: 500,

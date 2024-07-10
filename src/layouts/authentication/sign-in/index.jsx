@@ -58,8 +58,10 @@ function Basic() {
           console.log(response.data);
           if (response.data.role === "kader") {
             localStorage.setItem('token', response.data.token);
-            localStorage.setItem('user', JSON.stringify(response.data.nama));
+            localStorage.setItem('user', response.data.nama);
+            localStorage.setItem('username', response.data.username);
             localStorage.setItem('id_user', response.data.id_user);
+            localStorage.setItem('role', response.data.role);
             navigate('/admin/dashboard');
           } else {
             Swal.fire({

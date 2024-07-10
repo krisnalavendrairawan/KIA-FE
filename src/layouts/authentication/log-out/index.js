@@ -6,6 +6,8 @@ const logOut = () => {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
   localStorage.removeItem('id_user');
+  localStorage.removeItem('role');
+  localStorage.removeItem('username');
 
   navigate('/authentication/sign-in');
 };

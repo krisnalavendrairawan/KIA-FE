@@ -19,6 +19,8 @@ const logoStyle = {
     width: '80px',
     height: 'auto',
     cursor: 'pointer',
+    // jika layar berada di tampilan mobile maka logoPosyandu tidak akan muncul
+    
 };
 
 function AppAppBar({ mode, toggleColorMode }) {
@@ -85,11 +87,13 @@ function AppAppBar({ mode, toggleColorMode }) {
                                 px: 0,
                             }}
                         >
-                            <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+                            <Box sx={{ display: { xs: 'none', md: 'block', lg: 'block' } }}>
+                            {/* jika layar berada di tampilan mobile maka logoPosyandu tidak akan muncul */}
                                 <img
                                     src={LogoPosyandu}
+                                    alt="Logo Posyandu"
                                     style={logoStyle}
-                                    alt="logo of sitemark"
+                                    onClick={() => scrollToSection('home')}
                                 />
                             </Box>
                             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>

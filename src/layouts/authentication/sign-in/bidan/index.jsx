@@ -58,6 +58,7 @@ function Basic() {
           if (response.data.role === "bidan") {
             localStorage.setItem('token', response.data.token);
             localStorage.setItem('user', JSON.stringify(response.data.user));
+            localStorage.setItem('role', response.data.role);
             navigate('/admin/dashboard');
           } else {
             Swal.fire({

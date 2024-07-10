@@ -41,7 +41,7 @@ const ChildCountChart = ({ data }) => {
     };
 
     return (
-        <Box sx={{ width: '100%', height: 400 }}>
+        <Box sx={{ width: '100%', height: 800 }}>
             <Bar data={chartData} options={options} />
         </Box>
     );

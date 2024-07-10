@@ -1,25 +1,11 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
+import { useState, useEffect } from "react";
 
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-import { useState } from "react";
-
-// @mui material components
+// @mui/material components
 import Card from "@mui/material/Card";
-import Icon from "@mui/material/Icon";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -27,77 +13,182 @@ import MDTypography from "components/MDTypography";
 
 // Material Dashboard 2 React examples
 import DataTable from "examples/Tables/DataTable";
+import { Edit } from "@mui/icons-material";
+import { Delete } from "@mui/icons-material";
 
 // Data
-import data from "layouts/dashboard/components/Projects/data";
+import CreateJadwalModal from "./modal/createJadwal";
+import EditJadwal from "./modal/editJadwal";
+import axios from "axios";
+import { format } from 'date-fns';
+import { id as idLocale } from 'date-fns/locale';
+import useDeleteData from "hooks/useDelete";
+
+const url = "http://127.0.0.1:8000/api";
 
 function Projects() {
-  const { columns, rows } = data();
-  const [menu, setMenu] = useState(null);
+  const [rows, setRows] = useState([]);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const { deleteData } = useDeleteData(`${url}/deleteJadwal`);
+  const [selectedId, setSelectedId] = useState(null);
+  const [openEditDialog, setOpenEditDialog] = useState(false);
 
-  const openMenu = ({ currentTarget }) => setMenu(currentTarget);
-  const closeMenu = () => setMenu(null);
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await axios(`${url}/getJadwal`);
+      const dataWithId = result.data.jadwal.map((data) => ({
+        id: data.id_jadwal,
+        tgl_kegiatan: data.tgl_kegiatan ? format(new Date(data.tgl_kegiatan), 'dd MMMM yyyy', { locale: idLocale }) : '',
+        rw: data.rw,
+        tempat: data.tempat,
+        keterangan: data.keterangan
+      }));
 
-  const renderMenu = (
-    <Menu
-      id="simple-menu"
-      anchorEl={menu}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "left",
-      }}
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={Boolean(menu)}
-      onClose={closeMenu}
-    >
-      <MenuItem onClick={closeMenu}>Action</MenuItem>
-      <MenuItem onClick={closeMenu}>Another action</MenuItem>
-      <MenuItem onClick={closeMenu}>Something else</MenuItem>
-    </Menu>
-  );
+      // Sort the data based on `rw` value
+      const sortedData = dataWithId.sort((a, b) => a.rw - b.rw);
+      setRows(sortedData.map(item => createRow(item)));
+    };
+
+    fetchData();
+  }, []);
+
+  const formatDate = (date) => {
+    return date ? format(new Date(date), 'dd MMMM yyyy', { locale: idLocale }) : '';
+  };
+
+  const handleEdit = (id) => {
+    setSelectedId(id);
+    setOpenEditDialog(true);
+    console.log("Edit action for row id:", id);
+  };
+
+  const handleDelete = async (id) => {
+    console.log("Delete action for row id:", id);
+    await deleteData(id);
+    setRows(prevRows => prevRows.filter(row => row.id !== id));
+    setAlertMessage("Data berhasil dihapus");
+    setAlertOpen(true);
+  };
+
+  const createRow = (item) => ({
+    id: item.id,
+    tgl_kegiatan: (
+      <MDTypography variant="caption" color="text" fontWeight="medium">
+        {item.tgl_kegiatan}
+      </MDTypography>
+    ),
+    rw: (
+      <MDTypography variant="caption" color="text" fontWeight="medium">
+        0{item.rw}
+      </MDTypography>
+    ),
+    tempat: (
+      <MDTypography variant="caption" color="text" fontWeight="medium">
+        {item.tempat}
+      </MDTypography>
+    ),
+    keterangan: (
+      <MDTypography variant="caption" color="text" fontWeight="medium">
+        {item.keterangan}
+      </MDTypography>
+    ),
+    action: (
+      <MDBox display="flex" justifyContent="center" alignItems="center">
+        <Button id="edit-button" startIcon={<Edit />} color="secondary" size="small" onClick={() => handleEdit(item.id)}>
+          Edit
+        </Button>
+        <Button id="delete-button" startIcon={<Delete />} color="error" size="small" onClick={() => handleDelete(item.id)} style={{ marginLeft: '8px' }}>
+          Delete
+        </Button>
+      </MDBox>
+    ),
+  });
+
+  const handleOpenModal = () => {
+    setOpenDialog(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenDialog(false);
+  };
+
+  const handleOpenEditModal = () => {
+    setOpenEditDialog(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setOpenEditDialog(false);
+  };
+
+  const handleSuccess = (newData) => {
+    newData.tgl_kegiatan = formatDate(newData.tgl_kegiatan);
+    setRows((prevRows) => {
+      const updatedRows = [...prevRows, createRow(newData)];
+      return updatedRows.sort((a, b) => parseInt(a.rw.props.children) - parseInt(b.rw.props.children)); // Sort after adding new row
+    });
+  };
+
+  const handleEditSuccess = (updatedData) => {
+    updatedData.tgl_kegiatan = formatDate(updatedData.tgl_kegiatan);
+    setRows((prevRows) => {
+      const updatedRows = prevRows.map((row) => row.id === updatedData.id ? createRow(updatedData) : row);
+      return updatedRows.sort((a, b) => parseInt(a.rw.props.children) - parseInt(b.rw.props.children)); // Sort after editing row
+    });
+  };
+
+  const handleCloseAlert = () => {
+    setAlertOpen(false);
+  };
+
+  const columns = [
+    { Header: "Tanggal Kegiatan", accessor: "tgl_kegiatan", width: "30%", align: "left" },
+    { Header: "RW", accessor: "rw", width: "10%", align: "left" },
+    { Header: "Tempat", accessor: "tempat", align: "center" },
+    { Header: "Keterangan", accessor: "keterangan", align: "center" },
+    { Header: "Action", accessor: "action", align: "center" },
+  ];
 
   return (
-    <Card>
-      <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-        <MDBox>
-          <MDTypography variant="h6" gutterBottom>
-            Projects
-          </MDTypography>
-          <MDBox display="flex" alignItems="center" lineHeight={0}>
-            <Icon
-              sx={{
-                fontWeight: "bold",
-                color: ({ palette: { info } }) => info.main,
-                mt: -0.5,
-              }}
-            >
-              done
-            </Icon>
-            <MDTypography variant="button" fontWeight="regular" color="text">
-              &nbsp;<strong>30 done</strong> this month
+    <>
+      <Card>
+        <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
+          <MDBox>
+            <MDTypography variant="h6" gutterBottom>
+              Jadwal Kegiatan
             </MDTypography>
+            <MDBox display="flex" alignItems="center" lineHeight={0}>
+              <MDTypography variant="button" fontWeight="regular" color="text">
+                <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', marginTop: '1rem' }}>
+                  {rows.length < 12 && (
+                    <Button variant="contained" id="create-button" onClick={handleOpenModal}>
+                      Tambah Jadwal
+                    </Button>
+                  )}
+                </Box>
+              </MDTypography>
+            </MDBox>
           </MDBox>
         </MDBox>
-        <MDBox color="text" px={2}>
-          <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={openMenu}>
-            more_vert
-          </Icon>
+        <MDBox>
+          <DataTable
+            table={{ columns, rows }}
+            showTotalEntries={false}
+            isSorted={false}
+            noEndBorder
+            entriesPerPage={false}
+          />
         </MDBox>
-        {renderMenu}
-      </MDBox>
-      <MDBox>
-        <DataTable
-          table={{ columns, rows }}
-          showTotalEntries={false}
-          isSorted={false}
-          noEndBorder
-          entriesPerPage={false}
-        />
-      </MDBox>
-    </Card>
+      </Card>
+      <CreateJadwalModal open={openDialog} handleClose={handleCloseModal} onSuccess={handleSuccess} />
+      <EditJadwal open={openEditDialog} handleClose={handleCloseEditModal} selectedId={selectedId} onSuccess={handleEditSuccess} />
+      <Snackbar open={alertOpen} autoHideDuration={6000} onClose={handleCloseAlert}>
+        <Alert onClose={handleCloseAlert} severity="success" sx={{ width: '100%' }}>
+          {alertMessage}
+        </Alert>
+      </Snackbar>
+    </>
   );
 }
 

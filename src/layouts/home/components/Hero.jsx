@@ -170,7 +170,7 @@ export default function Hero() {
                         sx={(theme) => ({
                             mt: { xs: 8, sm: 10 },
                             alignSelf: 'center',
-                            height: { xs: 200, sm: 700 },
+                            height: { xs: 350, sm: 500, md: 650, lg: 650 },
                             width: '100%',
                             // backgroundImage: `url(${iconPosyandu})`,
                             // // theme.palette.mode === 'light'
@@ -191,7 +191,7 @@ export default function Hero() {
 
 
                     >
-                        <Grid container spacing={0} justifyContent="center" alignItems="center" padding={5}>
+                        <Grid container spacing={0} justifyContent="center" alignItems="center" padding={5}  >
                             <Grid item xs={12} sm={6}>
                                 <Typography
                                     component="span"
@@ -205,7 +205,8 @@ export default function Hero() {
                                     Selamat Datang di Website Posyandu Cibeusi
                                 </Typography>
                             </Grid>
-                            <Grid item xs={12} sm={6}>
+                            <Grid item xs={12} sm={6} sx={{ display: { xs: 'none', md: 'block', lg: 'block' } }}>
+
                                 <img src={iconPosyandu} alt="iconPosyandu" />
                             </Grid>
                         </Grid>

@@ -7,7 +7,10 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
+import Pagination from '@mui/material/Pagination';
 import Typography from '@mui/material/Typography';
+import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CallIcon from '@mui/icons-material/Call';
@@ -18,8 +21,6 @@ import ViewQuiltRoundedIcon from '@mui/icons-material/ViewQuiltRounded';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import ChildCountChart from './features/ChildCountChart';
-import { format } from 'date-fns';
-import { id as idLocale } from 'date-fns/locale';
 
 const url = "http://127.0.0.1:8000/api";
 
@@ -27,7 +28,8 @@ export default function Features() {
     const [selectedItemIndex, setSelectedItemIndex] = useState(0);
     const [data, setData] = useState([]);
     const [jadwal, setJadwal] = useState([]);
-    const [childCount, setChildCount] = useState([]);
+    const [page, setPage] = useState(1);
+    const itemsPerPage = 3;
 
     useEffect(() => {
         const fetchData = async () => {
@@ -78,7 +80,13 @@ export default function Features() {
         console.log("Deleted");
     };
 
+    const handleChangePage = (event, value) => {
+        setPage(value);
+    };
+
     const selectedFeature = items[selectedItemIndex];
+    const paginatedSchedule = selectedFeature.schedule ? selectedFeature.schedule.slice((page - 1) * itemsPerPage, page * itemsPerPage) : [];
+    const totalPages = selectedFeature.schedule ? Math.ceil(selectedFeature.schedule.length / itemsPerPage) : 1;
 
     return (
         <Container id="features" sx={{ py: { xs: 8, sm: 16 } }}>
@@ -105,39 +113,6 @@ export default function Features() {
                             mt: 4,
                         }}
                     >
-                        {selectedFeature.schedule ? (
-                            <Box sx={{ px: 2, pb: 2 }}>
-                                <Typography color="text.primary" variant="body2" fontWeight="bold">
-                                    {selectedFeature.title}
-                                </Typography>
-                                {selectedFeature.schedule.map((item, index) => (
-                                    <Box key={index} sx={{ my: 1 }}>
-                                        <Typography color="text.secondary" variant="body2">
-                                            Tanggal: {format(new Date(item.tgl_kegiatan), 'dd MMMM yyyy', { locale: idLocale })}
-                                        </Typography>
-                                        <Typography color="text.secondary" variant="body2">
-                                            Tempat: {item.tempat}
-                                        </Typography>
-                                        <Typography color="text.secondary" variant="body2">
-                                            Keterangan: {item.keterangan}
-                                        </Typography>
-                                    </Box>
-                                ))}
-                            </Box>
-                        ) : (
-                            <Box
-                                sx={{
-                                    backgroundImage: (theme) =>
-                                        theme.palette.mode === 'light'
-                                            ? selectedFeature.imageLight
-                                            : selectedFeature.imageDark,
-                                    backgroundSize: 'cover',
-                                    backgroundPosition: 'center',
-                                    backgroundRepeat: 'no-repeat',
-                                    minHeight: 280,
-                                }}
-                            />
-                        )}
                         <Box sx={{ px: 2, pb: 2 }}>
                             <Typography color="text.primary" variant="body2" fontWeight="bold">
                                 {selectedFeature.title}
@@ -269,19 +244,45 @@ export default function Features() {
                             <Typography color="text.primary" variant="h5" fontWeight="bold">
                                 {selectedFeature.title}
                             </Typography>
-                            {selectedFeature.schedule.map((item, index) => (
+                            {paginatedSchedule.map((item, index) => (
                                 <Box key={index} sx={{ my: 1 }}>
-                                    <Typography color="text.secondary" variant="body2">
-                                        Tanggal: {format(new Date(item.tgl_kegiatan), 'EEEE, dd MMMM yyyy', { locale: idLocale })}
-                                    </Typography>
-                                    <Typography color="text.secondary" variant="body2">
-                                        Tempat: {item.tempat}
-                                    </Typography>
-                                    <Typography color="text.secondary" variant="body2">
-                                        Keterangan: {item.keterangan}
-                                    </Typography>
+                                    <Card
+                                        sx={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            justifyContent: 'space-between',
+                                            flexGrow: 1,
+                                            p: 1,
+                                        }}
+                                    >
+                                        <CardContent>
+                                            <Typography variant="body2" color="text.secondary">
+                                                {item.keterangan}
+                                            </Typography>
+                                        </CardContent>
+                                        <Box
+                                            sx={{
+                                                display: 'flex',
+                                                flexDirection: 'row',
+                                                justifyContent: 'space-between',
+                                                pr: 2,
+                                            }}
+                                        >
+                                            <CardHeader
+                                                title={"RW " + item.rw}
+                                                subheader={"Tempat: " + item.tempat}
+                                            />
+                                        </Box>
+                                    </Card>
                                 </Box>
                             ))}
+                            <Pagination
+                                count={totalPages}
+                                page={page}
+                                onChange={handleChangePage}
+                                sx={{ mt: 2 }}
+                            />
+                            <strong>jika jadwal posyandu di RW anda tidak ada, mungkin petugas posyandu belum mengatur jadwal kegiatan posyandu di RW anda. Silahkan hubungi petugas posyandu untuk informasi lebih lanjut.</strong>
                         </Box>
                     ) : selectedFeature.title === 'Lokasi Posyandu' ? (
                         <Box
@@ -289,13 +290,13 @@ export default function Features() {
                                 borderRadius: 2,
                                 overflow: 'hidden',
                                 width: '100%',
-                                height: 400,
+                                height: 700,
                             }}
                         >
                             <Typography mb={5} variant="h5" fontWeight="bold">
                                 <Stack direction="column" spacing={1}>
                                     <Chip
-                                        label="Desa Cibeusi, Kecataman Jatinangor, Kabupaten Sumedang"
+                                        label="Desa Cibeusi, Kecamatan Jatinangor, Kabupaten Sumedang"
                                         onDelete={handleDelete}
                                         deleteIcon={<LocationOnIcon />}
                                         variant="outlined"
@@ -321,10 +322,12 @@ export default function Features() {
                                 style={{ border: 0 }}
                                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.6408368228367!2d107.75807437475706!3d-6.933459893066438!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68c372c05ea651%3A0xb41d565df7587769!2skost%20kuning%20cibeusi!5e0!3m2!1sid!2sid!4v1720448855877!5m2!1sid!2sid"
                                 allowFullScreen
+                                loading="lazy"
+
                             />
                         </Box>
                     ) : selectedFeature.title === 'Jumlah Anak yang Terdaftar' ? (
-                        <Box sx={{ p: 3, width: '100%' }}>
+                        <Box sx={{ p: 3, width: '100%', height: 800, overflow: 'hidden' }}>
                             <Typography color="text.primary" variant="h5" fontWeight="bold">
                                 {selectedFeature.title}
                             </Typography>
@@ -341,7 +344,7 @@ export default function Features() {
                                 backgroundSize: 'cover',
                                 backgroundPosition: 'center',
                                 backgroundRepeat: 'no-repeat',
-                                minHeight: 400,
+                                minHeight: 800,
                             }}
                         />
                     )}
