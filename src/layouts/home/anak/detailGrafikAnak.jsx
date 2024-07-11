@@ -2,14 +2,15 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { Line, Bar } from "react-chartjs-2";
+import { Chart as ChartJS, PointElement, LineElement, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend } from 'chart.js';
 import { Alert, Grid, Paper, Typography, Divider, RadioGroup, FormControlLabel, Radio, Box } from "@mui/material";
 import BarChartIcon from '@mui/icons-material/BarChart';
 import LineChartIcon from '@mui/icons-material/ShowChart';
 import BackButton from 'components/BackButton';
-import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-import SessionExpired from "layouts/authentication/log-out/session";
 import PageLayout from "examples/LayoutContainers/PageLayout";
+
+// Register chart.js elements
+ChartJS.register(PointElement, LineElement, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
 
 const URL = 'http://127.0.0.1:8000/api';
 
@@ -95,7 +96,6 @@ const DetailGraphicChild = () => {
     return (
         <PageLayout>
             <div className="container mx-auto" style={{ paddingLeft: '20px', paddingTop: '20px', paddingRight: '100px' }}>
-
 
                 {loading ? (
                     <div className="text-center text-xl">Loading data...</div>

@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
 import { useNavigate } from "react-router-dom";
+import useUserRole from "hooks/useUserRole";
 
 // Images
 import team2 from "assets/images/team-2.jpg";
@@ -16,6 +17,7 @@ import team2 from "assets/images/team-2.jpg";
 export default function DataAnak() {
   const navigate = useNavigate();
   const [datas, setDatas] = useState([]);
+  const userRole = useUserRole();
 
   useEffect(() => {
     axios.get("http://127.0.0.1:8000/api/getAnak")
@@ -92,7 +94,7 @@ export default function DataAnak() {
     nama_ayah: PropTypes.string.isRequired,
   };
 
-  const rows = datas.map((data, index) => ({
+  const rows = datas.map((data) => ({
     nama_anak: <Anak image={team2} nama_anak={data.nama_anak} nik={String(data.nik)} />,
     orang_tua: <Parent nama_ibu={data.nama_ibu} nama_ayah={data.nama_ayah} />,
     nik: String(data.nik),
@@ -117,26 +119,31 @@ export default function DataAnak() {
         >
           View
         </MDTypography>
-        <MDTypography
-          component="a"
-          href={`/anak/edit/${data.nik}`}
-          variant="caption"
-          color="warning"
-          fontWeight="medium"
-          style={{ marginRight: 8 }}
-        >
-          Edit
-        </MDTypography>
-        <MDTypography
-          component={Link}
-          variant="caption"
-          color="error"
-          fontWeight="medium"
-          style={{ marginRight: 8 }}
-          onClick={() => handleDelete(data.nik)}
-        >
-          Delete
-        </MDTypography>
+        {userRole !== 'bidan' && (
+          <>
+            <MDTypography
+              component={Link}
+              to={`/anak/edit/${data.nik}`}
+              variant="caption"
+              color="warning"
+              fontWeight="medium"
+              style={{ marginRight: 8 }}
+            >
+              Edit
+            </MDTypography>
+            <MDTypography
+              component="a"
+              href="#"
+              variant="caption"
+              color="error"
+              fontWeight="medium"
+              style={{ marginRight: 8 }}
+              onClick={() => handleDelete(data.nik)}
+            >
+              Delete
+            </MDTypography>
+          </>
+        )}
       </MDBox>
     ),
   }));

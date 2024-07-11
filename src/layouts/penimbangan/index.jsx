@@ -15,17 +15,15 @@ import useDeleteData from "hooks/useDelete"; // Import useDeleteData custom hook
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
 import SessionExpired from "layouts/authentication/log-out/session";
+import useUserRole from "hooks/useUserRole";
 
 const VISIBLE_FIELDS = [
     'tgl_penimbangan',
-    // 'nik_anak',
     'nama_anak',
     'berat_badan',
     'tinggi_badan',
     'status_gizi',
     'keterangan',
-    // 'saran',
-    // 'usia'
 ];
 
 const Penimbangan = () => {
@@ -35,25 +33,25 @@ const Penimbangan = () => {
     const navigate = useNavigate();
     const [openEditDialog, setOpenEditDialog] = useState(false);
     const [selectedId, setSelectedId] = useState(null);
+    const userRole = useUserRole();
 
     const { loading: deleteLoading, error: deleteError, deleteData } = useDeleteData("http://127.0.0.1:8000/api/deletePenimbangan");
 
     useEffect(() => {
-        // Set bahasa lokal menjadi bahasa Indonesia
         fetchDataPenimbangan();
     }, []);
 
     const fetchDataPenimbangan = () => {
         axios.get("http://127.0.0.1:8000/api/getPenimbangan")
             .then((response) => {
-                const dataWithIds = response.data.penimbangan.map((row, index) => ({
+                const dataWithIds = response.data.penimbangan.map((row) => ({
                     ...row,
                     id: row.id_penimbangan,
                     nama_anak: row.anak ? row.anak.nama_anak : '',
                     berat_badan: row.berat_badan ? row.berat_badan + " kg" : '',
                     tinggi_badan: row.tinggi_badan ? row.tinggi_badan + " cm" : '',
                     tgl_penimbangan: row.tgl_penimbangan ? format(new Date(row.tgl_penimbangan), 'dd MMMM yyyy', { locale: id }) : '',
-                }))
+                }));
                 const filteredData = dataWithIds.filter(data => data.status_gizi !== '-');
 
                 setDataPenimbangan(filteredData);
@@ -64,7 +62,6 @@ const Penimbangan = () => {
                 setLoading(false);
             });
     };
-
 
     const handleEdit = (id) => {
         console.log("Edit action for row id:", id);
@@ -104,16 +101,20 @@ const Penimbangan = () => {
                         <Button onClick={() => handleView(params.row.id)} startIcon={<Visibility />} color="primary">
                             View
                         </Button>
-                        <Button id="edit-button" onClick={() => handleEdit(params.row.id)} startIcon={<Edit />} color="secondary">
-                            Edit
-                        </Button>
-                        <Button id="delete-button" onClick={() => handleDelete(params.row.id)} startIcon={<Delete />} color="error">
-                            Delete
-                        </Button>
+                        {userRole !== 'bidan' && (
+                            <>
+                                <Button id="edit-button" onClick={() => handleEdit(params.row.id)} startIcon={<Edit />} color="secondary">
+                                    Edit
+                                </Button>
+                                <Button id="delete-button" onClick={() => handleDelete(params.row.id)} startIcon={<Delete />} color="error">
+                                    Delete
+                                </Button>
+                            </>
+                        )}
                     </div>
                 )
             }
-        ],[]
+        ], [userRole] // Add userRole to the dependency array to re-render columns when userRole changes
     );
 
     const handleCloseEditModal = () => {
@@ -125,7 +126,7 @@ const Penimbangan = () => {
         <DashboardLayout>
             <DashboardNavbar />
             <Alert variant="filled" icon={<MonitorWeightIcon fontSize="inherit" />} severity="info">
-                Halmaan Penimbangan
+                Halaman Penimbangan
             </Alert>
             <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', marginTop: '1rem' }}>
                 <Button variant="contained" id="create-button" color="primary" onClick={handleCreatePenimbangan}>Create Penimbangan</Button>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import Pagination from "@mui/material/Pagination";
@@ -16,6 +16,7 @@ import DataTable from "examples/Tables/DataTable";
 import { useNavigate } from "react-router-dom";
 import dataAnak from "./data/dataAnak";
 import SessionExpired from "layouts/authentication/log-out/session";
+import useUserRole from "hooks/useUserRole";
 
 function Tables() {
   SessionExpired();
@@ -25,6 +26,7 @@ function Tables() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
+  const userRole = useUserRole();
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -40,7 +42,6 @@ function Tables() {
     setSearchTerm(value);
     setPage(1); // Reset to first page on search
   };
-
 
   const filteredRows = rows.filter((row) =>
     ['nama_anak', 'nik', 'no_kk', 'nama_ibu', 'nama_ayah', 'jenis_kelamin', 'tanggal_lahir', 'bb_lahir', 'pb_lahir', 'alamat'].some(
@@ -58,10 +59,6 @@ function Tables() {
     )
   );
 
-
-
-
-
   console.log("Filtered rows:", filteredRows);
 
   const startIndex = (page - 1) * rowsPerPage;
@@ -71,11 +68,13 @@ function Tables() {
     <DashboardLayout>
       <DashboardNavbar />
       <Stack direction="row" justifyContent="flex-start" alignItems="flex-start" spacing={3}>
-        <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', marginTop: '1rem' }}>
-          <Button variant="contained" id="create-button" onClick={handleCreateAnak}>
-            <AddIcon sx={{ marginRight: '10px' }} /> Tambah Data Anak
-          </Button>
-        </Box>
+        {userRole !== 'bidan' && (
+          <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', marginTop: '1rem' }}>
+            <Button variant="contained" id="create-button" onClick={handleCreateAnak}>
+              <AddIcon sx={{ marginRight: '10px' }} /> Tambah Data Anak
+            </Button>
+          </Box>
+        )}
         <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', marginTop: '1rem' }}>
           <TextField
             id="search-bar"
@@ -139,3 +138,4 @@ function Tables() {
 }
 
 export default Tables;
+

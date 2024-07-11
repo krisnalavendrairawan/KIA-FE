@@ -1,16 +1,22 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
-const logOut = () => {
+const LogOut = () => {
   const navigate = useNavigate();
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
-  localStorage.removeItem('id_user');
-  localStorage.removeItem('role');
-  localStorage.removeItem('username');
+  React.useEffect(() => {
+    Swal.fire({
+      title: 'Logout Berhasil',
+      text: 'Anda telah logout dari aplikasi',
+      icon: 'success',
+      confirmButtonText: 'OK',
+    }).then(() => {
+      localStorage.clear();
+      navigate('/authentication/sign-in');
+    });
+  }, [navigate]);
 
-  navigate('/authentication/sign-in');
+  return null;
 };
 
-export default logOut;
-// Path: src/layouts/authentication/Log-out/index.js
+export default LogOut;
