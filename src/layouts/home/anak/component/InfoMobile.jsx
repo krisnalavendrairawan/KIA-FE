@@ -37,7 +37,7 @@ function InfoMobile({ data }) {
         endIcon={<ExpandMoreRoundedIcon />}
         onClick={toggleDrawer(true)}
       >
-        View details
+        Selengkapnya
       </Button>
       <Drawer open={open} anchor="top" onClose={toggleDrawer(false)}>
         {DrawerList}

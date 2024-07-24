@@ -177,6 +177,22 @@ const MyDocument = ({ datas }) => (
                         <Text style={styles.tableCell}>: {datas && datas.usia} bulan</Text>
                     </View>
                 </View>
+                <View style={styles.tableRow}>
+                    <View style={styles.tableCol}>
+                        <Text style={styles.tableCell}>Pemberian Vitamin</Text>
+                    </View>
+                    <View style={styles.tableCol}>
+                        <Text style={styles.tableCell}>: {datas && datas.vitamin}</Text>
+                    </View>
+                </View>
+                <View style={styles.tableRow}>
+                    <View style={styles.tableCol}>
+                        <Text style={styles.tableCell}>Pemberian MPASI</Text>
+                    </View>
+                    <View style={styles.tableCol}>
+                        <Text style={styles.tableCell}>: {datas && datas.mpasi}</Text>
+                    </View>
+                </View>
             </View>
         </Page>
     </Document>

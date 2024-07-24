@@ -32,10 +32,10 @@ const EditImunisasiModal = ({ open, handleClose, selectedId }) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            if(selectedId){
+            if (selectedId) {
                 setLoading(true);
                 // console.log("Selected ID: ", selectedId);
-                try{
+                try {
                     const response = await axios.get(`http://127.0.0.1:8000/api/getImunisasiById/${selectedId}`);
                     const data = response.data.imunisasi;
                     console.log(data);
@@ -49,11 +49,11 @@ const EditImunisasiModal = ({ open, handleClose, selectedId }) => {
                         usia: data.usia
                     });
                 }
-                catch(error){
+                catch (error) {
                     console.log(error);
                     setError("Gagal mengambil data");
                 }
-                finally{
+                finally {
                     setLoading(false);
                 }
             }
@@ -62,22 +62,31 @@ const EditImunisasiModal = ({ open, handleClose, selectedId }) => {
     }, [selectedId, open]);
 
     useEffect(() => {
-        if(!open){
+        if (!open) {
             setNikAnak(null);
             setSelectedImunisasi(null);
             reset();
-        }} , [open]);
-    
+        }
+    }, [open]);
+
     const onSubmit = async (data) => {
         const id_user = localStorage.getItem('id_user');
         // console.log(id_user);
         // console.log(data);
-        try{
+        try {
+            if (data.vitamin === null) {
+                data.vitamin = 'Tidak ada';
+            }
+            if (data.mpasi === null) {
+                data.mpasi = 'Tidak ada';
+            }
             const newData = {
                 tgl_imunisasi: dayjs(data.tgl_imunisasi).format('YYYY-MM-DD'),
                 nik_anak: nikAnak,
                 jenis_imunisasi: data.jenis_imunisasi,
                 usia: data.usia,
+                vitamin: data.vitamin,
+                mpasi: data.mpasi,
                 id_kader: id_user
             }
             console.log(newData);
@@ -85,7 +94,7 @@ const EditImunisasiModal = ({ open, handleClose, selectedId }) => {
             const result = await axios.put(`http://localhost:8000/api/updateImunisasi/${selectedId}`, newData);
             alert('Data berhasil di update');
             handleClose(); // Close the modal after successful update
-        }catch(error){
+        } catch (error) {
             console.log(error);
         }
     }
@@ -127,18 +136,18 @@ const EditImunisasiModal = ({ open, handleClose, selectedId }) => {
                                 />
                             </Grid>
                             <Grid item xs={12}>
-                            <Controller
-                                name="tgl_imunisasi"
-                                control={control}
-                                defaultValue={dayjs(dataAnak?.tgl_imunisasi)}
-                                render={({ field }) => (
-                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                        <DemoContainer components={['DatePicker']}>
-                                            <DatePicker fullWidth label="Tanggal Imunisasi" {...field} />
-                                        </DemoContainer>
-                                    </LocalizationProvider>
-                                )}
-                            />
+                                <Controller
+                                    name="tgl_imunisasi"
+                                    control={control}
+                                    defaultValue={dayjs(dataAnak?.tgl_imunisasi)}
+                                    render={({ field }) => (
+                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                            <DemoContainer components={['DatePicker']}>
+                                                <DatePicker fullWidth label="Tanggal Imunisasi" {...field} />
+                                            </DemoContainer>
+                                        </LocalizationProvider>
+                                    )}
+                                />
 
                             </Grid>
                             <Grid item xs={12}>
@@ -152,7 +161,7 @@ const EditImunisasiModal = ({ open, handleClose, selectedId }) => {
                                             labelId="jenis_imunisasi"
                                             id="jenis_imunisasi"
                                             label="Jenis Imunisasi"
-                                            sx={{ height: '40px'}}
+                                            sx={{ height: '40px' }}
                                             onChange={handleChange}
                                             {...field}
                                         >
@@ -182,6 +191,24 @@ const EditImunisasiModal = ({ open, handleClose, selectedId }) => {
                                     render={({ field }) => <TextField fullWidth {...field} label="Usia" variant="outlined" type='number' InputProps={{
                                         startAdornment: <InputAdornment position="start">bulan</InputAdornment>,
                                     }} />}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Controller
+                                    name="vitamin"
+                                    control={control}
+
+                                    defaultValue={dataAnak?.vitamin}
+                                    render={({ field }) => <TextField fullWidth {...field} label="Pemberian Vitamin" variant="outlined" type='text' multiline rows={4} />}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Controller
+                                    name="mpasi"
+                                    control={control}
+
+                                    defaultValue={dataAnak?.mpasi}
+                                    render={({ field }) => <TextField fullWidth {...field} label="Pemberian Vitamin" variant="outlined" type='text' multiline rows={4} />}
                                 />
                             </Grid>
                         </Grid>

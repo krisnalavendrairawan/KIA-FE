@@ -86,12 +86,14 @@ const EditJadwal = ({ open, handleClose, onSuccess, selectedId }) => {
                             <Grid item xs={12}>
                                 <Controller
                                     name="tgl_kegiatan"
+
                                     control={control}
                                     defaultValue={dayjs()}
                                     render={({ field }) => (
                                         <DatePicker
+                                            sx={{ marginTop: 2 }}
                                             {...field}
-                                            label="Schedule Date"
+                                            label="Tanggal Kegiatan Posyandu"
                                             renderInput={(params) => <TextField {...params} fullWidth />}
                                         />
                                     )}
@@ -100,14 +102,14 @@ const EditJadwal = ({ open, handleClose, onSuccess, selectedId }) => {
                             <Grid item xs={12}>
                                 <TextField
                                     fullWidth
-                                    label="Location"
+                                    label="Tempat"
                                     {...register("tempat")}
                                 />
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
                                     fullWidth
-                                    label="Description"
+                                    label="Keterangan Tambahan"
                                     {...register("keterangan")}
                                 />
                             </Grid>

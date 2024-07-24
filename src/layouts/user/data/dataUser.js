@@ -7,6 +7,7 @@ import MDAvatar from "components/MDAvatar";
 import MDBadge from "components/MDBadge";
 import Swal from 'sweetalert2';
 import { Link } from "react-router-dom";
+import useUserRole from "hooks/useUserRole";
 
 import useDeleteData from "hooks/useDelete";
 
@@ -16,6 +17,7 @@ import team3 from "assets/images/team-3.jpg";
 export default function DataUser() {
     const [datas, setDatas] = useState([]);
     const { loading: deleteLoading, error: deleteError, deleteData } = useDeleteData("http://127.0.0.1:8000/api/deleteUser");
+    const userRole = useUserRole();
 
     //get user menggunakan async await
     const getUser = async () => {
@@ -84,8 +86,10 @@ export default function DataUser() {
             fontWeight="medium"
             style={{ marginRight: 8 }}
           >
-            View
+            Lihat
           </MDTypography>
+          {userRole !== 'bidan' && userRole !== 'kader' && (
+          <>
           <MDTypography
             component="a"
             href={`/user/edit/${data.id}`}
@@ -104,8 +108,10 @@ export default function DataUser() {
             style={{ marginRight: 8 }}
             onClick={() => handleDelete(data.id)} // Call handleDelete function on click
           >
-            Delete
+            Hapus
           </MDTypography>
+          </>
+          )}
         </MDBox>
         ),
       }))

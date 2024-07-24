@@ -1,7 +1,7 @@
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 
-import {useState, useEffect, useMemo} from "react";
+import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Button, Box } from '@mui/material';
@@ -9,6 +9,7 @@ import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { Edit, Visibility, Delete } from '@mui/icons-material';
 import { Alert } from "@mui/material";
 import MedicalInformationIcon from '@mui/icons-material/MedicalInformation';
+import useUserRole from "hooks/useUserRole";
 
 import EditMedicalModal from './modal/edit';
 import useDeleteData from "hooks/useDelete";
@@ -32,6 +33,7 @@ const Medical = () => {
     const navigate = useNavigate();
     const [openEditDialog, setOpenEditDialog] = useState(false);
     const [selectedId, setSelectedId] = useState(null);
+    const userRole = useUserRole();
 
     const { loading: deleteLoading, error: deleteError, deleteData } = useDeleteData("http://127.0.0.1:8000/api/deleteMedical");
 
@@ -46,13 +48,13 @@ const Medical = () => {
                 const dataWithIds = response.data.riwayatPenyakit.map((row, index) => ({
                     ...row,
                     id: row.id_penyakit,
-                    nik_anak : row.anak ? row.anak.nik : '',
-                    nama_anak : row.anak ? row.anak.nama_anak : '',
+                    nik_anak: row.anak ? row.anak.nik : '',
+                    nama_anak: row.anak ? row.anak.nama_anak : '',
                     tgl_rujukan: row.tgl_rujukan ? format(new Date(row.tgl_rujukan), 'dd MMMM yyyy', { locale: id }) : '',
                     jenis_penyakit: row.jenis_penyakit ? row.jenis_penyakit : '',
-                    rujukan : row.rujukan ? row.rujukan : '',
-                    saran : row.saran ? row.saran : '',
-                    id_kader : row.user ? row.user.id : '',
+                    rujukan: row.rujukan ? row.rujukan : '',
+                    saran: row.saran ? row.saran : '',
+                    id_kader: row.user ? row.user.id : '',
                 }));
                 setMedicalData(dataWithIds);
                 setLoading(false);
@@ -97,23 +99,22 @@ const Medical = () => {
                 renderCell: (params) => (
                     <div>
                         <Button onClick={() => handleView(params.row.id)} startIcon={<Visibility />} color="primary">
-                            View
+                            Lihat
                         </Button>
-                        <Button id="edit-button" onClick={() => handleEdit(params.row.id)} startIcon={<Edit />} color="secondary">
-                            Edit
-                        </Button>
-                        <Button id="delete-button" onClick={() => handleDelete(params.row.id)} startIcon={<Delete />} color="error">
-                            Delete
-                        </Button>
+                        {userRole !== 'bidan' && (
+                            <>
+                                <Button id="edit-button" onClick={() => handleEdit(params.row.id)} startIcon={<Edit />} color="secondary">
+                                    Edit
+                                </Button>
+                                <Button id="delete-button" onClick={() => handleDelete(params.row.id)} startIcon={<Delete />} color="error">
+                                    Hapus
+                                </Button>
+                            </>
+                        )}
                     </div>
                 )
             },
-            // {
-            //     field: 'id',
-            //     headerName: 'ID',
-            //     // hide: true,
-            // }
-        ],[]
+        ], [userRole]
     );
 
     const handleCloseEditModal = () => {
@@ -127,9 +128,11 @@ const Medical = () => {
             <Alert variant="filled" icon={<MedicalInformationIcon fontSize="inherit" />} severity="info">
                 halaman riwayat penyakit anak
             </Alert>
-            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', marginTop: '1rem' }}>
-                <Button variant="contained" id="create-button" onClick={handleCreateMedical}>Create Riwayat Penyakit</Button>
-            </Box>
+            {userRole !== 'bidan' && (
+                <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', marginTop: '1rem' }}>
+                    <Button variant="contained" id="create-button" onClick={handleCreateMedical}>Create Riwayat Penyakit</Button>
+                </Box>
+            )}
 
             {loading ? (
                 'Loading...'
@@ -150,16 +153,16 @@ const Medical = () => {
                         autoHeight
                         autoWidth
                         columnBuffer={5}
-                        //tambahkan agar bisa scroll horizontal
-                        // autoPageSize
-                        // pageSize={5}
-                        // rowsPerPageOptions={[5, 10, 20]}
+                    //tambahkan agar bisa scroll horizontal
+                    // autoPageSize
+                    // pageSize={5}
+                    // rowsPerPageOptions={[5, 10, 20]}
 
                     />
                 </Box>
             )}
             <EditMedicalModal open={openEditDialog} handleClose={handleCloseEditModal} selectedId={selectedId} />
-            
+
         </DashboardLayout>
     )
 }

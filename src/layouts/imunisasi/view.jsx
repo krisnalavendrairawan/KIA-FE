@@ -32,6 +32,8 @@ const DetailImunisasi = () => {
                     tgl_imunisasi: data.tgl_imunisasi ? format(new Date(data.tgl_imunisasi), 'dd MMMM yyyy', { locale: idLocale }) : '',
                     jenis_imunisasi: data.jenis_imunisasi ? data.jenis_imunisasi : '',
                     usia: data.usia ? data.usia : '',
+                    vitamin: data.vitamin ? data.vitamin : '',
+                    mpasi: data.mpasi ? data.mpasi : '',
                     nama_ibu: data.anak ? data.anak.nama_ibu : '',
                     nama_ayah: data.anak ? data.anak.nama_ayah : '',
                     alamat: data.anak ? data.anak.alamat : '',
@@ -129,6 +131,14 @@ const DetailImunisasi = () => {
                                     <TableRow>
                                         <TableCell><strong>Usia</strong></TableCell>
                                         <TableCell>{datas.usia} Bulan</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell><strong>Pemberian Vitamin</strong></TableCell>
+                                        <TableCell>{datas.vitamin}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell><strong>Pemberian MPASI</strong></TableCell>
+                                        <TableCell>{datas.mpasi}</TableCell>
                                     </TableRow>
                                 </TableBody>
                             </Table>

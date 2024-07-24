@@ -56,7 +56,7 @@ function Basic() {
           }
         }).then((response) => {
           console.log(response.data);
-          if (response.data.role === "kader") {
+          if (response.data.role === "kader" || response.data.role === "admin") {
             localStorage.setItem('token', response.data.token);
             localStorage.setItem('user', response.data.nama);
             localStorage.setItem('username', response.data.username);

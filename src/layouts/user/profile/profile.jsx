@@ -12,8 +12,7 @@ import Grid from "@mui/material/Grid";
 import Divider from "@mui/material/Divider";
 import team3 from "assets/images/team-3.jpg";
 import SessionExpired from "layouts/authentication/log-out/session";
-
-
+import useUserRole from "hooks/useUserRole";
 
 import MDBox from "components/MDBox";
 
@@ -22,12 +21,12 @@ const ProfilDetailUser = () => {
     const [data, setData] = useState([]);
     const [otherData, setOtherData] = useState([]);
     const { id } = useParams();
-
+    const userRole = useUserRole();
+    const role = localStorage.getItem("role");
     const getUser = async () => {
         try {
             const response = await axios.get(`http://127.0.0.1:8000/api/getUser/${id}`);
             setData(response.data.user);
-            // console.log(response.data.user);
         } catch (error) {
             console.error(error);
         }
@@ -36,11 +35,8 @@ const ProfilDetailUser = () => {
     const getOtherUser = async () => {
         try {
             const response = await axios.get(`http://127.0.0.1:8000/api/getAllUser`);
-            // console.log(response.data.users)
             const filteredData = response.data.users.filter(user => user.id !== parseInt(id));
             setOtherData(filteredData);
-            // console.log(filteredData);
-
         } catch (error) {
             console.error(error);
         }
@@ -56,7 +52,7 @@ const ProfilDetailUser = () => {
 
     const transformOtherData = (otherData) => {
         return otherData.map(user => ({
-            image: team3, // Ganti dengan path gambar default jika tidak ada gambar
+            image: team3,
             name: user.nama,
             description: `${user.role}`,
             action: {
@@ -67,7 +63,6 @@ const ProfilDetailUser = () => {
             },
         }));
     };
-
 
     return (
         <DashboardLayout>
@@ -90,7 +85,8 @@ const ProfilDetailUser = () => {
                                 alamat: `${data.alamat}, RT ${data.rt}/RW ${data.rw}`,
                             }}
                             social={[]}
-                            action={{ route: `/user/edit/${data.id}/`, tooltip: "Edit Profile" }}
+                            action={userRole !== "kader" || userRole !== "bidan" ? { route: `/user/edit/${data.id}/`, tooltip: "Edit Profile" } : null}
+
                             shadow={false}
                         />
                         <Divider orientation="vertical" sx={{ mx: 0 }} />

@@ -1,7 +1,7 @@
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 
-import {useState, useEffect, useMemo} from "react";
+import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Button, Box } from '@mui/material';
@@ -18,6 +18,7 @@ import { id } from 'date-fns/locale';
 
 import './style.css';
 import SessionExpired from "layouts/authentication/log-out/session";
+import useUserRole from "hooks/useUserRole";
 
 const IMUNISASI_COLUMN = [
     'tgl_imunisasi',
@@ -35,6 +36,7 @@ const Imunisasi = () => {
     const navigate = useNavigate();
     const [openEditDialog, setOpenEditDialog] = useState(false);
     const [selectedId, setSelectedId] = useState(null);
+    const userRole = useUserRole();
 
     const { loading: deleteLoading, error: deleteError, deleteData } = useDeleteData("http://127.0.0.1:8000/api/deleteImunisasi"); // Gunakan custom hook deleteData
 
@@ -43,28 +45,28 @@ const Imunisasi = () => {
         fetchDataImunisasi();
     }, []);
 
-        const fetchDataImunisasi = () => {
-            axios.get("http://127.0.0.1:8000/api/getImunisasi")
-                .then((response) => {
-                    console.log(response.data.imunisasi);
-                    const dataWithIds = response.data.imunisasi.map((row, index) => ({
-                        ...row,
-                        id: row.id_imunisasi,
-                        nama_anak: row.anak ? row.anak.nama_anak : '',
-                        jenis_imunisasi: row.jenis_imunisasi ? row.jenis_imunisasi : '',
-                        usia: row.usia ? row.usia + " bulan" : '',
-                        tgl_imunisasi: row.tgl_imunisasi ? format(new Date(row.tgl_imunisasi), 'dd MMMM yyyy', { locale: id }) : '',
-                        
-                    }));
-                    setDataImunisasi(dataWithIds);
-                    setLoading(false);
-                })
-                .catch((error) => {
-                    console.log(error);
-                    setLoading(false);
-                });
-                
-        };
+    const fetchDataImunisasi = () => {
+        axios.get("http://127.0.0.1:8000/api/getImunisasi")
+            .then((response) => {
+                console.log(response.data.imunisasi);
+                const dataWithIds = response.data.imunisasi.map((row, index) => ({
+                    ...row,
+                    id: row.id_imunisasi,
+                    nama_anak: row.anak ? row.anak.nama_anak : '',
+                    jenis_imunisasi: row.jenis_imunisasi ? row.jenis_imunisasi : '',
+                    usia: row.usia ? row.usia + " bulan" : '',
+                    tgl_imunisasi: row.tgl_imunisasi ? format(new Date(row.tgl_imunisasi), 'dd MMMM yyyy', { locale: id }) : '',
+
+                }));
+                setDataImunisasi(dataWithIds);
+                setLoading(false);
+            })
+            .catch((error) => {
+                console.log(error);
+                setLoading(false);
+            });
+
+    };
 
 
     const handleCreateImunisasi = () => {
@@ -103,14 +105,18 @@ const Imunisasi = () => {
                 renderCell: (params) => (
                     <div>
                         <Button onClick={() => handleView(params.row.id)} startIcon={<Visibility />} color="primary">
-                            View
+                            Lihat
                         </Button>
-                        <Button id="edit-button" onClick={() => handleEdit(params.row.id)} startIcon={<Edit />} color="secondary">
-                            Edit
-                        </Button>
-                        <Button id="delete-button" onClick={() => handleDelete(params.row.id)} startIcon={<Delete />} color="error">
-                            Delete
-                        </Button>
+                        {userRole !== 'bidan' && (
+                            <>
+                                <Button id="edit-button" onClick={() => handleEdit(params.row.id)} startIcon={<Edit />} color="secondary">
+                                    Edit
+                                </Button>
+                                <Button id="delete-button" onClick={() => handleDelete(params.row.id)} startIcon={<Delete />} color="error">
+                                    Hapus
+                                </Button>
+                            </>
+                        )}
                     </div>
                 )
             },
@@ -119,7 +125,7 @@ const Imunisasi = () => {
             //     headerName: 'ID',
             //     // hide: true,
             // }
-        ],[]
+        ], [userRole] 
     );
 
     const handleCloseEditModal = () => {
@@ -136,9 +142,11 @@ const Imunisasi = () => {
             <Alert variant="filled" icon={<VaccinesIcon fontSize="inherit" />} severity="info">
                 halaman imunisasi
             </Alert>
-            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', marginTop: '1rem' }}>
-                <Button variant="contained" id="create-button" onClick={handleCreateImunisasi}>Create Imunisasi</Button>
-            </Box>
+            {userRole !== 'bidan' && (
+                <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', marginTop: '1rem' }}>
+                    <Button variant="contained" id="create-button" onClick={handleCreateImunisasi}>Create Imunisasi</Button>
+                </Box>
+            )}
 
             {loading ? (
                 'Loading...'
@@ -159,15 +167,15 @@ const Imunisasi = () => {
                         autoHeight
                         autoWidth
                         columnBuffer={5}
-                        // autoPageSize
-                        // pageSize={5}
-                        // rowsPerPageOptions={[5, 10, 20]}
+                    // autoPageSize
+                    // pageSize={5}
+                    // rowsPerPageOptions={[5, 10, 20]}
 
                     />
                 </Box>
             )}
             <EditImunisasiModal open={openEditDialog} handleClose={handleCloseEditModal} selectedId={selectedId} />
-            
+
         </DashboardLayout>
     )
 }

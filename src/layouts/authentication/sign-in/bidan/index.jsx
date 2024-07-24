@@ -55,7 +55,7 @@ function Basic() {
             'Content-Type': 'application/json',
           }
         }).then((response) => {
-          if (response.data.role === "bidan") {
+          if (response.data.role === "bidan" || response.data.role === "admin") {
             localStorage.setItem('token', response.data.token);
             localStorage.setItem('user', JSON.stringify(response.data.user));
             localStorage.setItem('role', response.data.role);

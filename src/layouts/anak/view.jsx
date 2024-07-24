@@ -17,6 +17,7 @@ import BackButton from 'components/BackButton';
 import ChildDetailPDF from './utils/pdf';
 import { PDFViewer } from '@react-pdf/renderer';
 import SessionExpired from "layouts/authentication/log-out/session";
+import useUserRole from 'hooks/useUserRole';
 
 const DetailAnak = () => {
     SessionExpired();
@@ -25,6 +26,7 @@ const DetailAnak = () => {
     const [dataPenimbangan, setDataPenimbangan] = useState(null);
     const [dataImunisasi, setDataImunisasi] = useState(null);
     const [showPdfViewer, setShowPdfViewer] = useState(false);
+    const userRole = useUserRole();
 
     useEffect(() => {
         const fetchData = async () => {

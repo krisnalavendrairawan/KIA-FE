@@ -99,7 +99,7 @@ const Penimbangan = () => {
                 renderCell: (params) => (
                     <div>
                         <Button onClick={() => handleView(params.row.id)} startIcon={<Visibility />} color="primary">
-                            View
+                            Lihat
                         </Button>
                         {userRole !== 'bidan' && (
                             <>
@@ -107,14 +107,14 @@ const Penimbangan = () => {
                                     Edit
                                 </Button>
                                 <Button id="delete-button" onClick={() => handleDelete(params.row.id)} startIcon={<Delete />} color="error">
-                                    Delete
+                                    Hapus
                                 </Button>
                             </>
                         )}
                     </div>
                 )
             }
-        ], [userRole] // Add userRole to the dependency array to re-render columns when userRole changes
+        ], [userRole]
     );
 
     const handleCloseEditModal = () => {
@@ -128,9 +128,11 @@ const Penimbangan = () => {
             <Alert variant="filled" icon={<MonitorWeightIcon fontSize="inherit" />} severity="info">
                 Halaman Penimbangan
             </Alert>
-            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', marginTop: '1rem' }}>
-                <Button variant="contained" id="create-button" color="primary" onClick={handleCreatePenimbangan}>Create Penimbangan</Button>
-            </Box>
+            {userRole !== 'bidan' && (
+                <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', marginTop: '1rem' }}>
+                    <Button variant="contained" id="create-button" color="primary" onClick={handleCreatePenimbangan}>Create Penimbangan</Button>
+                </Box>
+            )}
             {loading ? (
                 'Loading...'
             ) : (

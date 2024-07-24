@@ -4,6 +4,7 @@ import axios from "axios"
 import "react-datepicker/dist/react-datepicker.css";
 import { Card, CardActionArea, CardMedia, CardContent, Grid, Typography, Stack, TextField, Box, Autocomplete, InputAdornment, Button, Alert } from '@mui/material';
 
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
@@ -19,7 +20,8 @@ import giziCalculation from "./data/giziCalculation";
 import bayiImage from "assets/images/penimbangan/bayi.png";
 import MonitorWeightIcon from '@mui/icons-material/MonitorWeight';
 
-
+import { format } from 'date-fns'; // Import date-fns format function
+import { id as idLocale } from 'date-fns/locale'; // Correct import for the locale
 
 import React, { useEffect, useState } from 'react'
 import { Create } from "@mui/icons-material";
@@ -189,87 +191,70 @@ const CreatePenimbangan = () => {
                                     />
                                 </Box>
                                 {selectedAnak && (
-                                    <Box>
-                                        <Card sx={{ maxWidth: 345 }}>
-                                            <CardActionArea>
-                                                <CardMedia
-                                                    component="img"
-                                                    height="140"
-                                                    image={bayiImage}
-                                                    width={100}
-                                                />
-                                                <CardContent>
-                                                    <Grid container spacing={2}>
-                                                        <Grid item xs={12}>
-                                                            <Typography gutterBottom variant="h6" component="div">
-                                                                NIK Anak
-                                                            </Typography>
-                                                            <Typography variant="body1" color="text.secondary">
-                                                                {selectedAnak.nik}
-                                                            </Typography>
-                                                            <Typography gutterBottom variant="h6" component="div">
-                                                                No KK
-                                                            </Typography>
-                                                            <Typography variant="body1" color="text.secondary">
-                                                                {selectedAnak.no_kk}
-                                                            </Typography>
-                                                            <Typography gutterBottom variant="h6" component="div">
-                                                                Nama Anak
-                                                            </Typography>
-                                                            <Typography variant="body1" color="text.secondary">
-                                                                {selectedAnak.nama_anak}
-                                                            </Typography>
-                                                            <Typography gutterBottom variant="h6" component="div">
-                                                                Berat Badan
-                                                            </Typography>
-                                                            <Typography variant="body1" color="text.secondary">
-                                                                {previousWeight} kg
-                                                            </Typography>
-                                                            <Typography gutterBottom variant="h6" component="div">
-                                                                Tinggi Badan
-                                                            </Typography>
-                                                            <Typography variant="body1" color="text.secondary">
-                                                                {previousHeight} cm
-                                                            </Typography>
-                                                            <Typography gutterBottom variant="h6" component="div">
-                                                                Jenis Kelamin
-                                                            </Typography>
-                                                            <Typography variant="body1" color="text.secondary">
-                                                                {selectedAnak.jenis_kelamin}
-                                                            </Typography>
-                                                            <Typography gutterBottom variant="h6" component="div">
-                                                                Umur
-                                                            </Typography>
-                                                            <Typography variant="body1" color="text.secondary">
-                                                                {selectedAnak.umur} bulan
-                                                            </Typography>
-                                                        </Grid>
-                                                        <Grid item xs={6}>
+                                    <Card sx={{ marginTop: 2 }}>
+                                        <CardActionArea>
+                                            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 140 }}>
+                                                <img src={bayiImage} alt="Bayi" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                                            </Box>
+                                            <CardContent sx={{ textAlign: 'center' }}>
+                                                <Typography gutterBottom variant="h3" component="div">
+                                                    Data Anak
+                                                </Typography>
+                                                <TableContainer component={Paper}>
+                                                    <Table sx={{ minWidth: 450 }} aria-label="data anak table">
+                                                        <TableBody>
+                                                            <TableRow>
+                                                                <TableCell>NIK Anak</TableCell>
+                                                                <TableCell>{selectedAnak.nama_anak}</TableCell>
+                                                            </TableRow>
+                                                            <TableRow>
+                                                                <TableCell>Nama Anak</TableCell>
+                                                                <TableCell>{selectedAnak.nama_anak}</TableCell>
+                                                            </TableRow>
+                                                            <TableRow>
+                                                                <TableCell>Jenis Kelamin</TableCell>
+                                                                <TableCell>{selectedAnak.jenis_kelamin}</TableCell>
+                                                            </TableRow>
+                                                            <TableRow>
+                                                                <TableCell>Tanggal Lahir</TableCell>
+                                                                <TableCell>{format(new Date(selectedAnak.tanggal_lahir), 'dd MMMM yyyy', { locale: idLocale })}</TableCell>
+                                                            </TableRow>
+                                                            <TableRow>
+                                                                <TableCell>Berat Badan</TableCell>
+                                                                <TableCell>{previousWeight} kg</TableCell>
+                                                            </TableRow>
+                                                            <TableRow>
+                                                                <TableCell>Tinggi Badan</TableCell>
+                                                                <TableCell>{previousHeight} cm</TableCell>
+                                                            </TableRow>
+                                                            <TableRow>
+                                                                <TableCell>Umur</TableCell>
+                                                                <TableCell>{selectedAnak.umur} bulan</TableCell>
+                                                            </TableRow>
+                                                            <TableRow>
+                                                                <TableCell>Jenis Kelamin</TableCell>
+                                                                <TableCell>{selectedAnak.jenis_kelamin}</TableCell>
+                                                            </TableRow>
+                                                            <TableRow>
+                                                                <TableCell>Nama Ibu</TableCell>
+                                                                <TableCell>{selectedAnak.nama_ibu}</TableCell>
+                                                            </TableRow>
+                                                            <TableRow>
+                                                                <TableCell>Nama Ayah</TableCell>
+                                                                <TableCell>{selectedAnak.nama_ayah}</TableCell>
+                                                            </TableRow>
+                                                            <TableRow>
+                                                                <TableCell>Alamat</TableCell>
+                                                                <TableCell>{selectedAnak.alamat}</TableCell>
+                                                            </TableRow>
 
-                                                            <Typography gutterBottom variant="h6" component="div">
-                                                                Nama Ibu
-                                                            </Typography>
-                                                            <Typography variant="body1" color="text.secondary">
-                                                                {selectedAnak.nama_ibu}
-                                                            </Typography>
-                                                            <Typography gutterBottom variant="h6" component="div">
-                                                                Nama Ayah
-                                                            </Typography>
-                                                            <Typography variant="body1" color="text.secondary">
-                                                                {selectedAnak.nama_ayah}
-                                                            </Typography>
-                                                            <Typography gutterBottom variant="h6" component="div">
-                                                                Alamat
-                                                            </Typography>
-                                                            <Typography variant="body1" color="text.secondary">
-                                                                {selectedAnak.alamat}
-                                                            </Typography>
-                                                        </Grid>
-                                                    </Grid>
-                                                </CardContent>
-                                            </CardActionArea>
-                                        </Card>
-                                    </Box>
+                                                            {/* Tambahkan baris lain sesuai dengan data anak yang ingin ditampilkan */}
+                                                        </TableBody>
+                                                    </Table>
+                                                </TableContainer>
+                                            </CardContent>
+                                        </CardActionArea>
+                                    </Card>
                                 )}
                             </Stack>
                         </Grid>

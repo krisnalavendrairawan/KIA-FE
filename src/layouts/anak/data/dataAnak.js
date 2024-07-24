@@ -117,7 +117,7 @@ export default function DataAnak() {
           fontWeight="medium"
           style={{ marginRight: 8 }}
         >
-          View
+          Lihat
         </MDTypography>
         {userRole !== 'bidan' && (
           <>
@@ -140,7 +140,7 @@ export default function DataAnak() {
               style={{ marginRight: 8 }}
               onClick={() => handleDelete(data.nik)}
             >
-              Delete
+              Hapus
             </MDTypography>
           </>
         )}

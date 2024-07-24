@@ -24,6 +24,7 @@ import { useNavigate } from "react-router-dom";
 // Import dataUser
 import dataUser from "./data/dataUser";
 import SessionExpired from "layouts/authentication/log-out/session";
+import useUserRole from "hooks/useUserRole";
 
 
 
@@ -37,7 +38,7 @@ const User = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
-
+  const userRole = useUserRole();
   // Function to set the active page
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -74,11 +75,13 @@ const User = () => {
       <DashboardNavbar />
 
       <Stack direction="row" justifyContent="flex-start" alignItems="flex-start" spacing={3}>
-        <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', marginTop: '1rem' }}>
-          <Button variant="contained" id="create-button" onClick={handleCreateUser}>
-            <AddIcon sx={{ marginRight: '10px' }} /> Tambah Data User
-          </Button>
-        </Box>
+        {userRole !== 'bidan' && userRole !== 'kader' && (
+          <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', marginTop: '1rem' }}>
+            <Button variant="contained" id="create-button" onClick={handleCreateUser}>
+              <AddIcon sx={{ marginRight: '10px' }} /> Tambah Data User
+            </Button>
+          </Box>
+        )}
         <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', marginTop: '1rem' }}>
           <TextField
             id="search-bar"

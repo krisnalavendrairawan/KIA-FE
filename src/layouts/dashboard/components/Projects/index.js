@@ -23,6 +23,7 @@ import axios from "axios";
 import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
 import useDeleteData from "hooks/useDelete";
+import useUserRole from "hooks/useUserRole";
 
 const url = "http://127.0.0.1:8000/api";
 
@@ -34,6 +35,7 @@ function Projects() {
   const { deleteData } = useDeleteData(`${url}/deleteJadwal`);
   const [selectedId, setSelectedId] = useState(null);
   const [openEditDialog, setOpenEditDialog] = useState(false);
+  const userRole = useUserRole();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -67,6 +69,7 @@ function Projects() {
   const handleDelete = async (id) => {
     console.log("Delete action for row id:", id);
     await deleteData(id);
+    // eslint-disable-next-line react/prop-types
     setRows(prevRows => prevRows.filter(row => row.id !== id));
     setAlertMessage("Data berhasil dihapus");
     setAlertOpen(true);
@@ -93,16 +96,6 @@ function Projects() {
       <MDTypography variant="caption" color="text" fontWeight="medium">
         {item.keterangan}
       </MDTypography>
-    ),
-    action: (
-      <MDBox display="flex" justifyContent="center" alignItems="center">
-        <Button id="edit-button" startIcon={<Edit />} color="secondary" size="small" onClick={() => handleEdit(item.id)}>
-          Edit
-        </Button>
-        <Button id="delete-button" startIcon={<Delete />} color="error" size="small" onClick={() => handleDelete(item.id)} style={{ marginLeft: '8px' }}>
-          Delete
-        </Button>
-      </MDBox>
     ),
   });
 
@@ -133,6 +126,7 @@ function Projects() {
   const handleEditSuccess = (updatedData) => {
     updatedData.tgl_kegiatan = formatDate(updatedData.tgl_kegiatan);
     setRows((prevRows) => {
+      // eslint-disable-next-line react/prop-types
       const updatedRows = prevRows.map((row) => row.id === updatedData.id ? createRow(updatedData) : row);
       return updatedRows.sort((a, b) => parseInt(a.rw.props.children) - parseInt(b.rw.props.children)); // Sort after editing row
     });
@@ -142,13 +136,36 @@ function Projects() {
     setAlertOpen(false);
   };
 
-  const columns = [
+  let columns = [
     { Header: "Tanggal Kegiatan", accessor: "tgl_kegiatan", width: "30%", align: "left" },
     { Header: "RW", accessor: "rw", width: "10%", align: "left" },
     { Header: "Tempat", accessor: "tempat", align: "center" },
     { Header: "Keterangan", accessor: "keterangan", align: "center" },
-    { Header: "Action", accessor: "action", align: "center" },
   ];
+  // Remove Action column if userRole is 'kader'
+  if (userRole === 'kader') {
+    columns = columns.filter(column => column.accessor !== "action");
+  } else {
+    // Add Action column definition if userRole is not 'kader'
+    columns.push({
+      Header: "Action",
+      accessor: "action",
+      align: "center",
+      // eslint-disable-next-line react/prop-types
+      Cell: ({ row }) => (
+        <MDBox display="flex" justifyContent="center" alignItems="center">
+          {/* eslint-disable-next-line react/prop-types */}
+          <Button id="edit-button" startIcon={<Edit />} color="secondary" size="small" onClick={() => handleEdit(row.original.id)}>
+            Edit
+          </Button>
+          {/* eslint-disable-next-line react/prop-types */}
+          <Button id="delete-button" startIcon={<Delete />} color="error" size="small" onClick={() => handleDelete(row.original.id)} style={{ marginLeft: '8px' }}>
+            Delete
+          </Button>
+        </MDBox>
+      )
+    });
+  }
 
   return (
     <>
@@ -161,7 +178,7 @@ function Projects() {
             <MDBox display="flex" alignItems="center" lineHeight={0}>
               <MDTypography variant="button" fontWeight="regular" color="text">
                 <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', marginTop: '1rem' }}>
-                  {rows.length < 12 && (
+                  {rows.length < 12 && !['kader'].includes(userRole) && (
                     <Button variant="contained" id="create-button" onClick={handleOpenModal}>
                       Tambah Jadwal
                     </Button>

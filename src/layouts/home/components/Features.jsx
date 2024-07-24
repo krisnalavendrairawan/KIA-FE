@@ -58,7 +58,7 @@ export default function Features() {
         },
         {
             icon: <EdgesensorHighRoundedIcon />,
-            title: 'Lokasi Posyandu',
+            title: 'Lokasi Desa Cibeusi',
             description: 'This item could provide information about the mobile app version of the product.',
             imageLight: ``,
             imageDark: ``,
@@ -131,11 +131,11 @@ export default function Features() {
                                     '&:hover > svg': { transform: 'translateX(2px)' },
                                 }}
                             >
-                                <span>Learn more</span>
-                                <ChevronRightRoundedIcon
+                                {/* <span>Learn more</span> */}
+                                {/* <ChevronRightRoundedIcon
                                     fontSize="small"
                                     sx={{ mt: '1px', ml: '2px' }}
-                                />
+                                /> */}
                             </Link>
                         </Box>
                     </Box>
@@ -225,11 +225,11 @@ export default function Features() {
                                                 event.stopPropagation();
                                             }}
                                         >
-                                            <span>Learn more</span>
-                                            <ChevronRightRoundedIcon
+                                            {/* <span>Learn more</span> */}
+                                            {/* <ChevronRightRoundedIcon
                                                 fontSize="small"
                                                 sx={{ mt: '1px', ml: '2px' }}
-                                            />
+                                            /> */}
                                         </Link>
                                     </Box>
                                 </Box>
@@ -284,7 +284,7 @@ export default function Features() {
                             />
                             <strong>jika jadwal posyandu di RW anda tidak ada, mungkin petugas posyandu belum mengatur jadwal kegiatan posyandu di RW anda. Silahkan hubungi petugas posyandu untuk informasi lebih lanjut.</strong>
                         </Box>
-                    ) : selectedFeature.title === 'Lokasi Posyandu' ? (
+                    ) : selectedFeature.title === 'Lokasi Desa Cibeusi' ? (
                         <Box
                             sx={{
                                 borderRadius: 2,
@@ -325,6 +325,7 @@ export default function Features() {
                                 loading="lazy"
 
                             />
+
                         </Box>
                     ) : selectedFeature.title === 'Jumlah Anak yang Terdaftar' ? (
                         <Box sx={{ p: 3, width: '100%', height: 800, overflow: 'hidden' }}>
