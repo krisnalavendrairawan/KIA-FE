@@ -19,7 +19,8 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 import SessionExpired from "layouts/authentication/log-out/session";
 
-import { validateRT } from 'layouts/anak/utils/validateUtils';
+import { validateRT, validateNIK } from 'layouts/anak/utils/validateUtils';
+import Swal from 'sweetalert2';
 
 import './style.css';
 
@@ -31,7 +32,7 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar"
 
 const CreateAnak = () => {
     SessionExpired();
-
+    const navigate = useNavigate();
     const [jenisKelamin, setJenisKelamin] = useState('');
 
     const { control, handleSubmit, formState: { errors } } = useForm();
@@ -78,8 +79,13 @@ const CreateAnak = () => {
                 console.log(dataPenimbangan);
                 axios.post('http://127.0.0.1:8000/api/createPenimbangan', dataPenimbangan)
                     .then(response => {
-                        console.log(response);
-                        window.location.href = "/anak";
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: 'Data Anak berhasil ditambahkan',
+                        }).then(() => {
+                            navigate('/anak')
+                        })
                     })
             })
             .catch(error => {
@@ -126,7 +132,15 @@ const CreateAnak = () => {
                                     name="nik"
                                     control={control}
                                     defaultValue=""
-                                    render={({ field }) => <TextField fullWidth {...field} label="NIK" variant="outlined" type='number' />}
+                                    rules={{
+                                        required: 'NIK is tidak boleh kosong',
+                                        min: { value: 1, message: "NIK must be at least 1" },
+                                        validate: validateNIK // Custom validation function
+
+                                    }}
+                                    render={({ field }) => <TextField fullWidth {...field} label="NIK" variant="outlined" type='number'
+                                        error={Boolean(errors.nik)}
+                                        helperText={errors.nik && errors.nik.message} />}
                                 />
                             </Box>
                             <Box
@@ -139,7 +153,14 @@ const CreateAnak = () => {
                                     name="no_kk"
                                     control={control}
                                     defaultValue=""
-                                    render={({ field }) => <TextField fullWidth {...field} label="No KK" variant="outlined" type='number' />}
+                                    rules={{
+                                        required: 'No KK tidak boleh kosong',
+                                        min: { value: 1, message: "No KK must be at least 1" },
+                                        validate: validateNIK // Custom validation function
+                                    }}
+                                    render={({ field }) => <TextField fullWidth {...field} label="No KK" variant="outlined" type='number'
+                                        error={Boolean(errors.no_kk)}
+                                        helperText={errors.no_kk && errors.no_kk.message} />}
                                 />
                             </Box>
                             <Box
@@ -152,7 +173,14 @@ const CreateAnak = () => {
                                     name="nama_anak"
                                     control={control}
                                     defaultValue=""
-                                    render={({ field }) => <TextField fullWidth {...field} label="Nama Anak" variant="outlined" />}
+                                    rules={{
+                                        required: 'Nama Anak tidak boleh kosong',
+                                        min: { value: 1, message: "Nama Anak harus terisi" },
+                                    }}
+                                    render={({ field }) => <TextField fullWidth {...field} label="Nama Anak" variant="outlined"
+                                        error={Boolean(errors.nama_anak)}
+                                        helperText={errors.nama_anak && errors.nama_anak.message}
+                                    />}
                                 />
                             </Box>
                             <Box
@@ -165,7 +193,13 @@ const CreateAnak = () => {
                                     name="nama_ibu"
                                     control={control}
                                     defaultValue=""
-                                    render={({ field }) => <TextField fullWidth {...field} label="Nama Ibu" variant="outlined" />}
+                                    rules={{
+                                        required: 'Nama Ibu tidak boleh kosong',
+                                        min: { value: 1, message: "Nama Ibu harus terisi" },
+                                    }}
+                                    render={({ field }) => <TextField fullWidth {...field} label="Nama Ibu" variant="outlined"
+                                        error={Boolean(errors.nama_ibu)}
+                                        helperText={errors.nama_ibu && errors.nama_ibu.message} />}
                                 />
                             </Box>
                             <Box
@@ -178,7 +212,14 @@ const CreateAnak = () => {
                                     name="nama_ayah"
                                     control={control}
                                     defaultValue=""
-                                    render={({ field }) => <TextField fullWidth {...field} label="Nama Ayah" variant="outlined" />}
+                                    rules={{
+                                        required: 'Nama Ayah tidak boleh kosong',
+                                        min: { value: 1, message: "Nama Ayah harus terisi" },
+
+                                    }}
+                                    render={({ field }) => <TextField fullWidth {...field} label="Nama Ayah" variant="outlined"
+                                        error={Boolean(errors.nama_ayah)}
+                                        helperText={errors.nama_ayah && errors.nama_ayah.message} />}
                                 />
                             </Box>
                             <Box
@@ -191,7 +232,15 @@ const CreateAnak = () => {
                                     name="anak_ke"
                                     control={control}
                                     defaultValue=""
-                                    render={({ field }) => <TextField fullWidth {...field} label="Anak Ke-" variant="outlined" type='number' />}
+                                    rules={{
+                                        required: 'urutan lahir anak tidak boleh kosong',
+                                        min: { value: 1, message: "Anak ke harus terisi" },
+
+                                    }}
+                                    render={({ field }) => <TextField fullWidth {...field} label="Anak Ke-" variant="outlined" type='number'
+                                        error={Boolean(errors.anak_ke)}
+                                        helperText={errors.anak_ke && errors.anak_ke.message}
+                                    />}
                                 />
                             </Box>
 
@@ -230,15 +279,20 @@ const CreateAnak = () => {
                                     <Controller
                                         name="jenis_kelamin"
                                         control={control}
-                                        defaultValue=""
+                                        defaultValue="Laki-Laki"
+                                        rules={{
+                                            required: 'Jenis Kelamin tidak boleh kosong',
+
+                                        }}
                                         render={({ field }) => <Select
                                             fullWidth
                                             labelId="jenis-kelamin-label"
                                             id="jenis-kelamin"
                                             {...field}
                                             label="Jenis Kelamin"
-                                            defaultValue='Laki-Laki'
                                             sx={{ height: '40px' }}
+                                            error={Boolean(errors.jenis_kelamin)}
+                                            helperText={errors.jenis_kelamin && errors.jenis_kelamin.message}
                                         >
                                             <MenuItem value="Laki-Laki">Laki-Laki</MenuItem>
                                             <MenuItem value="Perempuan">Perempuan</MenuItem>
@@ -256,9 +310,16 @@ const CreateAnak = () => {
                                     name="bb_lahir"
                                     control={control}
                                     defaultValue=""
-                                    render={({ field }) => <TextField fullWidth {...field} label="Berat Badan Lahir" variant="outlined" type='number' InputProps={{
-                                        startAdornment: <InputAdornment position="start">kg</InputAdornment>,
-                                    }} />}
+                                    rules={{
+                                        required: 'Berat Badan Lahir tidak boleh kosong',
+                                        min: { value: 1, message: "Berat Badan Lahir harus terisi" },
+                                    }}
+                                    render={({ field }) => <TextField fullWidth {...field} label="Berat Badan Lahir" variant="outlined" type='number'
+                                        error={Boolean(errors.bb_lahir)}
+                                        helperText={errors.bb_lahir && errors.bb_lahir.message}
+                                        InputProps={{
+                                            startAdornment: <InputAdornment position="start">kg</InputAdornment>,
+                                        }} />}
                                 />
                             </Box>
                             <Box
@@ -271,9 +332,16 @@ const CreateAnak = () => {
                                     name="pb_lahir"
                                     control={control}
                                     defaultValue=""
-                                    render={({ field }) => <TextField fullWidth {...field} label="Panjang Badan Lahir" variant="outlined" type='number' InputProps={{
-                                        startAdornment: <InputAdornment position="start">cm</InputAdornment>,
-                                    }} />}
+                                    rules={{
+                                        required: 'Panjang Badan Lahir tidak boleh kosong',
+                                        min: { value: 1, message: "Panjang Badan Lahir harus terisi" },
+                                    }}
+                                    render={({ field }) => <TextField fullWidth {...field} label="Panjang Badan Lahir" variant="outlined" type='number'
+                                        error={Boolean(errors.pb_lahir)}
+                                        helperText={errors.pb_lahir && errors.pb_lahir.message}
+                                        InputProps={{
+                                            startAdornment: <InputAdornment position="start">cm</InputAdornment>,
+                                        }} />}
                                 />
                             </Box>
                             <Box
@@ -312,14 +380,13 @@ const CreateAnak = () => {
                                     <Controller
                                         name="rw"
                                         control={control}
-                                        defaultValue=""
+                                        defaultValue={1}
                                         render={({ field }) => <Select
                                             fullWidth
                                             labelId="rw-label"
                                             id="rw"
                                             {...field}
                                             label="RW"
-                                            defaultValue={1}
                                             sx={{ height: '100%' }}
                                         >
                                             <MenuItem value="1">01</MenuItem>
@@ -348,7 +415,14 @@ const CreateAnak = () => {
                                     name="no_hp_orang_tua"
                                     control={control}
                                     defaultValue=""
-                                    render={({ field }) => <TextField fullWidth {...field} label="No HP Orang Tua" variant="outlined" type='number' />}
+                                    rules={{
+                                        required: 'No HP Orang Tua tidak boleh kosong',
+                                        min: { value: 1, message: "No HP Orang Tua harus terisi" },
+                                    }}
+                                    render={({ field }) => <TextField fullWidth {...field} label="No HP Orang Tua" variant="outlined" type='number'
+                                        error={Boolean(errors.no_hp_orang_tua)}
+                                        helperText={errors.no_hp_orang_tua && errors.no_hp_orang_tua.message}
+                                    />}
                                 />
                             </Box>
 
@@ -362,6 +436,10 @@ const CreateAnak = () => {
                                     name="alamat"
                                     control={control}
                                     defaultValue=""
+                                    rules={{
+                                        required: 'Alamat tidak boleh kosong',
+                                        min: { value: 1, message: "Alamat harus terisi" },
+                                    }}
                                     render={({ field }) =>
                                         <TextField
                                             fullWidth
@@ -370,6 +448,8 @@ const CreateAnak = () => {
                                             multiline
                                             rows={4}
                                             {...field}
+                                            error={Boolean(errors.alamat)}
+                                            helperText={errors.alamat && errors.alamat.message}
                                         />}
                                 />
                             </Box>

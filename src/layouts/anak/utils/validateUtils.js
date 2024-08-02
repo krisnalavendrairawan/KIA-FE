@@ -5,4 +5,11 @@ const validateRT = (value) => {
     return true;
 };
 
-export { validateRT };
+const validateNIK = (value) => {
+    if (value.toString().length > 16) {
+        return "NIK tidak melebihi 16 digit";
+    }
+    return true;
+}
+
+export { validateRT, validateNIK };

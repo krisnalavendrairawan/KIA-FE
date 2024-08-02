@@ -15,6 +15,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
+import Swal from 'sweetalert2';
 
 import axios from 'axios';
 import { useForm, Controller } from "react-hook-form"
@@ -33,56 +34,56 @@ const EditPenimbangan = ({ open, handleClose, selectedId }) => {
     const [previousMonth, setPreviousMonth] = useState(null);
     const [jenisKelamin, setJenisKelamin] = useState(null);
     const [bulanPenimbangan, setBulanPenimbangan] = useState(null);
-    
+
 
     const { control, handleSubmit, reset, watch, setValue } = useForm();
 
-useEffect(() => {
-    const fetchData = async () => {
-        if (selectedId) {
-            setLoading(true);
-            console.log('selectedId:', selectedId);
-            try {
-                const response = await axios.get(`http://127.0.0.1:8000/api/getPenimbanganById/${selectedId}`);
-                console.log('response:', response);
-                //console log tanggal penimbangan
-                console.log('tgl_penimbangan:', response.data.penimbangan.tgl_penimbangan);
-                setDataAnak(response.data.penimbangan);
-                setNikAnak(response.data.penimbangan.nik_anak);
-                setPreviousMonth(response.data.penimbangan.usia);
+    useEffect(() => {
+        const fetchData = async () => {
+            if (selectedId) {
+                setLoading(true);
+                console.log('selectedId:', selectedId);
+                try {
+                    const response = await axios.get(`http://127.0.0.1:8000/api/getPenimbanganById/${selectedId}`);
+                    console.log('response:', response);
+                    //console log tanggal penimbangan
+                    console.log('tgl_penimbangan:', response.data.penimbangan.tgl_penimbangan);
+                    setDataAnak(response.data.penimbangan);
+                    setNikAnak(response.data.penimbangan.nik_anak);
+                    setPreviousMonth(response.data.penimbangan.usia);
 
-                // Penambahan pengecekan untuk memastikan objek response.data.penimbangan tidak null
-                if (response.data.penimbangan) {
-                    axios.get(`http://127.0.0.1:8000/api/getPenimbanganByNik/${response.data.penimbangan.nik_anak}`)
-                        .then((response) => {
-                            const data = response.data.penimbangan;
-                            data.sort((a, b) => new Date(b.tgl_penimbangan) - new Date(a.tgl_penimbangan));
-                            const currentIndex = data.findIndex(item => item.id_penimbangan === selectedId);
-                            const previousWeightIndex = currentIndex + 1;
-                            if (data[previousWeightIndex]) {
-                                const previousWeight = data[previousWeightIndex].berat_badan;
-                                setPreviousWeight(previousWeight);
-                            } else {
-                                console.log('Data for the previous month is not available.');
-                                setPreviousWeight(0);
-                            }
-                        })
-                        .catch((error) => {
-                            console.log(error);
-                        });
-                } else {
-                    console.log('Penimbangan data is null');
+                    // Penambahan pengecekan untuk memastikan objek response.data.penimbangan tidak null
+                    if (response.data.penimbangan) {
+                        axios.get(`http://127.0.0.1:8000/api/getPenimbanganByNik/${response.data.penimbangan.nik_anak}`)
+                            .then((response) => {
+                                const data = response.data.penimbangan;
+                                data.sort((a, b) => new Date(b.tgl_penimbangan) - new Date(a.tgl_penimbangan));
+                                const currentIndex = data.findIndex(item => item.id_penimbangan === selectedId);
+                                const previousWeightIndex = currentIndex + 1;
+                                if (data[previousWeightIndex]) {
+                                    const previousWeight = data[previousWeightIndex].berat_badan;
+                                    setPreviousWeight(previousWeight);
+                                } else {
+                                    console.log('Data for the previous month is not available.');
+                                    setPreviousWeight(0);
+                                }
+                            })
+                            .catch((error) => {
+                                console.log(error);
+                            });
+                    } else {
+                        console.log('Penimbangan data is null');
+                    }
+                } catch (error) {
+                    console.error(error);
+                } finally {
+                    setLoading(false);
                 }
-            } catch (error) {
-                console.error(error);
-            } finally {
-                setLoading(false);
             }
-        }
-    };
+        };
 
-    fetchData();
-}, [selectedId, open]);
+        fetchData();
+    }, [selectedId, open]);
 
     useEffect(() => {
         if (!open) {
@@ -121,11 +122,18 @@ useEffect(() => {
                 status_gizi: data.status_gizi,
                 saran: data.saran
             };
-            
+
             const result = await axios.put(`http://localhost:8000/api/updatePenimbangan/${selectedId}`, formData);
-            
-            alert('Data berhasil di update');
-            handleClose(); // Close the modal after successful update
+            // console.log('result:', result);
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: 'Data berhasil diubah',
+            });
+            handleClose();
+
+
+
         } catch (error) {
             console.error('Error fetching or adding data:', error);
         }
@@ -148,26 +156,26 @@ useEffect(() => {
     return (
         <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open} maxWidth="md" >
             <form onSubmit={handleSubmit(onSubmit)}>
-            <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-                Edit Penimbangan
-                <IconButton
-                    aria-label="close"
-                    onClick={handleClose}
-                    sx={{
-                        position: 'absolute',
-                        right: 8,
-                        top: 8,
-                        color: (theme) => theme.palette.grey[500],
-                    }}
-                >
-                    <CloseIcon />
-                </IconButton>
-            </DialogTitle>
-            <DialogContent dividers>
-                {loading ? (
-                    <Typography>Loading...</Typography>
-                ) : (
-                    
+                <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+                    Edit Penimbangan
+                    <IconButton
+                        aria-label="close"
+                        onClick={handleClose}
+                        sx={{
+                            position: 'absolute',
+                            right: 8,
+                            top: 8,
+                            color: (theme) => theme.palette.grey[500],
+                        }}
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                </DialogTitle>
+                <DialogContent dividers>
+                    {loading ? (
+                        <Typography>Loading...</Typography>
+                    ) : (
+
                         <Box
                             sx={{
                                 display: 'flex',
@@ -188,34 +196,34 @@ useEffect(() => {
                                 )}
                             />
 
-                                <Controller
-                                    name="usia"
-                                    control={control}
-                                    defaultValue={dataAnak?.usia}
-                                    render={({ field }) => <TextField fullWidth {...field} label="Usia" variant="outlined" type='number' InputProps={{
-                                        startAdornment: <InputAdornment position="start">bulan</InputAdornment>,
-                                    }} />}
-                                />
-
-                            
-                            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                             <Controller
-                                name="berat_badan"
+                                name="usia"
                                 control={control}
-                                defaultValue={dataAnak?.berat_badan}
-                                render={({ field }) => (
-                                    <TextField
-                                        fullWidth
-                                        {...field}
-                                        label="Berat Badan"
-                                        variant="outlined"
-                                        type="number"
-                                        InputProps={{
-                                            startAdornment: <InputAdornment position="start">kg</InputAdornment>,
-                                        }}
-                                    />
-                                )}
+                                defaultValue={dataAnak?.usia}
+                                render={({ field }) => <TextField fullWidth {...field} label="Usia" variant="outlined" type='number' InputProps={{
+                                    startAdornment: <InputAdornment position="start">bulan</InputAdornment>,
+                                }} />}
                             />
+
+
+                            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                                <Controller
+                                    name="berat_badan"
+                                    control={control}
+                                    defaultValue={dataAnak?.berat_badan}
+                                    render={({ field }) => (
+                                        <TextField
+                                            fullWidth
+                                            {...field}
+                                            label="Berat Badan"
+                                            variant="outlined"
+                                            type="number"
+                                            InputProps={{
+                                                startAdornment: <InputAdornment position="start">kg</InputAdornment>,
+                                            }}
+                                        />
+                                    )}
+                                />
                             </Box>
 
                             <Controller
@@ -237,51 +245,51 @@ useEffect(() => {
                             />
 
                             <Grid
-                            container
-                            direction="row"
-                            justifyContent="flex-start"
-                            alignItems="center"
-                            gap={2}
-                            >                           
-                            <Grid item xs={8} md={4}>
-                            <Controller
-                                name="keterangan"
-                                control={control}
-                                defaultValue={dataAnak?.keterangan}
-                                render={({ field }) => <TextField fullWidth {...field} label="Keterangan" variant="outlined" disabled />}
-                            />
-                            </Grid>
-                            <Grid item xs={8} md={6}>
-                            <Button variant="contained" color="success" id="warning-button"  onClick={handleCalculateWeightGain}>
-                                Hitung Kenaikan
-                            </Button>
-                            </Grid>
-                            </Grid>
-                            
-                           
-                            <Grid
-                            container
-                            direction="row"
-                            justifyContent="flex-start"
-                            alignItems="center"
-                            gap={2}
+                                container
+                                direction="row"
+                                justifyContent="flex-start"
+                                alignItems="center"
+                                gap={2}
                             >
-                             <Grid item xs={8} md={4}>
-                            
-                            <Controller
-                                name="status_gizi"
-                                control={control}
-                                defaultValue={dataAnak?.status_gizi}
-                                render={({ field }) => <TextField fullWidth disabled {...field} label="Status Gizi" variant="outlined" />}
-                                
-                            />
-                            </Grid>  
-                            <Grid item xs={8} md={6}>
-                               
-                                <Button variant="contained" color="success" id="warning-button" onClick={handleCalculateGizi}>
-                                    Hitung Status Gizi
-                                </Button>
-                            </Grid> 
+                                <Grid item xs={8} md={4}>
+                                    <Controller
+                                        name="keterangan"
+                                        control={control}
+                                        defaultValue={dataAnak?.keterangan}
+                                        render={({ field }) => <TextField fullWidth {...field} label="Keterangan" variant="outlined" disabled />}
+                                    />
+                                </Grid>
+                                <Grid item xs={8} md={6}>
+                                    <Button variant="contained" color="success" id="warning-button" onClick={handleCalculateWeightGain}>
+                                        Hitung Kenaikan
+                                    </Button>
+                                </Grid>
+                            </Grid>
+
+
+                            <Grid
+                                container
+                                direction="row"
+                                justifyContent="flex-start"
+                                alignItems="center"
+                                gap={2}
+                            >
+                                <Grid item xs={8} md={4}>
+
+                                    <Controller
+                                        name="status_gizi"
+                                        control={control}
+                                        defaultValue={dataAnak?.status_gizi}
+                                        render={({ field }) => <TextField fullWidth disabled {...field} label="Status Gizi" variant="outlined" />}
+
+                                    />
+                                </Grid>
+                                <Grid item xs={8} md={6}>
+
+                                    <Button variant="contained" color="success" id="warning-button" onClick={handleCalculateGizi}>
+                                        Hitung Status Gizi
+                                    </Button>
+                                </Grid>
                             </Grid>
                             <Controller
                                 name="saran"
@@ -298,14 +306,14 @@ useEffect(() => {
                                     />}
                             />
                         </Box>
-                    
-                )}
-            </DialogContent>
-            <DialogActions>
-                <Button autoFocus onClick={handleClose} type="submit">
-                    Simpan
-                </Button>
-            </DialogActions>
+
+                    )}
+                </DialogContent>
+                <DialogActions>
+                    <Button autoFocus onClick={handleClose} type="submit">
+                        Simpan
+                    </Button>
+                </DialogActions>
             </form>
         </Dialog>
     );

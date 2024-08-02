@@ -8,6 +8,8 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form"
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import { useState, useEffect } from 'react';
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout"
 import DashboardNavbar from "examples/Navbars/DashboardNavbar"
@@ -15,7 +17,7 @@ import SessionExpired from "layouts/authentication/log-out/session";
 
 const EditAnak = () => {
     SessionExpired();
-
+    const navigate = useNavigate();
     const [datas, setDatas] = useState(null);
 
     const { nik } = useParams();
@@ -57,8 +59,12 @@ const EditAnak = () => {
         axios.put(`http://127.0.0.1:8000/api/updateAnak/${nik}`, dataAnak)
             .then((response) => {
                 console.log(response);
-                alert('Data berhasil diubah');
-                window.location.href = '/anak';
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: 'Data anak berhasil diubah',
+                });
+                navigate('/anak');
             })
             .catch((error) => {
                 console.error("Error updating data: ", error);

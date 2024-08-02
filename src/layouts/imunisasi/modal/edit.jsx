@@ -19,6 +19,7 @@ import dayjs from 'dayjs';
 import axios from 'axios';
 import { useForm, Controller } from "react-hook-form";
 import InputAdornment from '@mui/material/InputAdornment';
+import Swal from 'sweetalert2';
 
 // eslint-disable-next-line react/prop-types
 const EditImunisasiModal = ({ open, handleClose, selectedId }) => {
@@ -92,8 +93,13 @@ const EditImunisasiModal = ({ open, handleClose, selectedId }) => {
             console.log(newData);
 
             const result = await axios.put(`http://localhost:8000/api/updateImunisasi/${selectedId}`, newData);
-            alert('Data berhasil di update');
-            handleClose(); // Close the modal after successful update
+            // console.log(result);
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: 'Data imunisasi berhasil diubah',
+            });
+            handleClose();
         } catch (error) {
             console.log(error);
         }

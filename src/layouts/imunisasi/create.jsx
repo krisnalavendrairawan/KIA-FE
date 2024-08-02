@@ -20,6 +20,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useForm, Controller, SubmitHandler, set } from "react-hook-form"
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
+import Swal from "sweetalert2";
 
 import bayiImage from "assets/images/penimbangan/bayi.png";
 import dataAnak from "./data/data";
@@ -33,7 +34,7 @@ const CreateImunisasi = () => {
     const [data, setData] = useState([]);
     const [selectedChild, setSelectedChild] = useState(null);
     const [jenisImunisasi, setJenisImunisasi] = useState('');
-    const { control, handleSubmit } = useForm();
+    const { control, handleSubmit, formState: { errors } } = useForm();
     const navigate = useNavigate();
     const today = dayjs();
 
@@ -56,6 +57,18 @@ const CreateImunisasi = () => {
     }, [selectedChild]);
 
     const onSubmit = (data) => {
+        // Check if selectedChild is null or undefined
+        if (!selectedChild || !selectedChild.nik) {
+            Swal.fire({
+                title: 'Gagal!',
+                text: 'Data anak belum dipilih!',
+                icon: 'error',
+                confirmButtonText: 'Ok'
+            });
+            return; // Prevent form submission
+        }
+
+        // Handle optional fields
         if (data.mpasi === undefined) {
             data.mpasi = "Tidak ada";
         }
@@ -78,13 +91,22 @@ const CreateImunisasi = () => {
             try {
                 const response = await axios.post("http://localhost:8000/api/createImunisasi", payload);
                 console.log(response);
-                navigate('/imunisasi');
+                Swal.fire({
+                    title: 'Berhasil!',
+                    text: 'Data imunisasi berhasil disimpan!',
+                    icon: 'success',
+                    confirmButtonText: 'Ok'
+                }).then(() => {
+                    navigate('/imunisasi');
+                });
+
             } catch (error) {
                 console.error('Error creating imunisasi:', error);
             }
         }
         postData();
     };
+
 
     const handleChange = (event) => {
         setJenisImunisasi(event.target.value);
@@ -115,7 +137,7 @@ const CreateImunisasi = () => {
                                         renderInput={(params) => (
                                             <TextField
                                                 {...params}
-                                                label="Search input"
+                                                label="Cari Anak"
                                                 InputProps={{
                                                     ...params.InputProps,
                                                     type: 'search',
@@ -194,12 +216,16 @@ const CreateImunisasi = () => {
                             <Controller
                                 name="usia"
                                 control={control}
-
-
+                                rules={{
+                                    required: "Usia harus diisi",
+                                    min: { value: 0, message: "Usia tidak boleh negatif" }
+                                }}
                                 render={({ field }) => <TextField fullWidth {...field}
                                     label="Usia"
                                     variant="filled"
                                     type='number'
+                                    error={Boolean(errors.usia)}
+                                    helperText={errors.usia && errors.usia.message}
                                     InputProps={{
                                         startAdornment: <InputAdornment position="start">bulan</InputAdornment>,
                                     }} />}
@@ -243,10 +269,8 @@ const CreateImunisasi = () => {
                             <Controller
                                 name="vitamin"
                                 control={control}
-
-
                                 render={({ field }) => <TextField fullWidth {...field}
-                                    label="Pemberian Vitamin"
+                                    label="Pemberian Vitamin (Opsional)"
                                     variant="outlined"
                                     type='text'
                                     // defaultValue={``}
@@ -262,7 +286,7 @@ const CreateImunisasi = () => {
 
 
                                 render={({ field }) => <TextField fullWidth {...field}
-                                    label="Pemberian MPASI"
+                                    label="Pemberian MPASI (Opsional)"
                                     variant="outlined"
                                     type='text'
                                     // defaultValue={``}

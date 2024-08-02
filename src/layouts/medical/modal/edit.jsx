@@ -19,6 +19,7 @@ import dayjs from 'dayjs';
 import axios from 'axios';
 import { useForm, Controller } from "react-hook-form";
 import InputAdornment from '@mui/material/InputAdornment';
+import Swal from 'sweetalert2';
 
 // eslint-disable-next-line react/prop-types
 const EditMedicalModal = ({ open, handleClose, selectedId }) => {
@@ -31,10 +32,10 @@ const EditMedicalModal = ({ open, handleClose, selectedId }) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            if(selectedId){
+            if (selectedId) {
                 setLoading(true);
                 console.log("Selected ID: ", selectedId);
-                try{
+                try {
                     const response = await axios.get(`http://127.0.0.1:8000/api/getMedicalById/${selectedId}`);
                     const data = response.data.riwayatPenyakit[0];
                     console.log(data);
@@ -45,15 +46,15 @@ const EditMedicalModal = ({ open, handleClose, selectedId }) => {
                     reset({
                         tgl_rujukan: dayjs(data.tgl_rujukan),
                         jenis_penyakit: data.jenis_penyakit,
-                        rujukan : data.rujukan,
+                        rujukan: data.rujukan,
                         saran: data.saran
                     });
                 }
-                catch(error){
+                catch (error) {
                     console.log(error);
                     setError("Gagal mengambil data");
                 }
-                finally{
+                finally {
                     setLoading(false);
                 }
             }
@@ -62,17 +63,18 @@ const EditMedicalModal = ({ open, handleClose, selectedId }) => {
     }, [selectedId, open]);
 
     useEffect(() => {
-        if(!open){
+        if (!open) {
             setNikAnak(null);
             setMedicalSelected(null);
             reset();
-        }} , [open]);
-    
+        }
+    }, [open]);
+
     const onSubmit = async (data) => {
         const id_user = localStorage.getItem('id_user');
         // console.log(id_user);
         // console.log(data);
-        try{
+        try {
             const newData = {
                 tgl_rujukan: dayjs(data.tgl_rujukan).format('YYYY-MM-DD'),
                 nik_anak: nikAnak,
@@ -84,9 +86,14 @@ const EditMedicalModal = ({ open, handleClose, selectedId }) => {
             console.log(newData);
 
             const result = await axios.put(`http://localhost:8000/api/updateMedical/${selectedId}`, newData);
-            alert('Data berhasil di update');
+            // console.log(result);
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: 'Data berhasil diupdate'
+            });
             handleClose(); // Close the modal after successful update
-        }catch(error){
+        } catch (error) {
             console.log(error);
         }
     }
@@ -125,18 +132,18 @@ const EditMedicalModal = ({ open, handleClose, selectedId }) => {
                                 />
                             </Grid>
                             <Grid item xs={12}>
-                            <Controller
-                                name="tgl_rujukan"
-                                control={control}
-                                defaultValue={dayjs(dataAnak?.tgl_rujukan)}
-                                render={({ field }) => (
-                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                        <DemoContainer components={['DatePicker']}>
-                                            <DatePicker fullWidth label="Tanggal Rujukan" {...field} />
-                                        </DemoContainer>
-                                    </LocalizationProvider>
-                                )}
-                            />
+                                <Controller
+                                    name="tgl_rujukan"
+                                    control={control}
+                                    defaultValue={dayjs(dataAnak?.tgl_rujukan)}
+                                    render={({ field }) => (
+                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                            <DemoContainer components={['DatePicker']}>
+                                                <DatePicker fullWidth label="Tanggal Rujukan" {...field} />
+                                            </DemoContainer>
+                                        </LocalizationProvider>
+                                    )}
+                                />
 
                             </Grid>
                             <Grid item xs={12}>
@@ -160,7 +167,10 @@ const EditMedicalModal = ({ open, handleClose, selectedId }) => {
                                     name="saran"
                                     control={control}
                                     defaultValue={dataAnak?.saran}
-                                    render={({ field }) => <TextField fullWidth {...field} label="Saran" variant="outlined" />}
+                                    render={({ field }) => <TextField fullWidth
+                                        rows={4}
+                                        multiline
+                                        {...field} label="Saran" variant="outlined" />}
                                 />
                             </Grid>
                         </Grid>

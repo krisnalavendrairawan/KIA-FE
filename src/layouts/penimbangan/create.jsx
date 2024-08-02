@@ -12,6 +12,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useForm, Controller, SubmitHandler, set } from "react-hook-form"
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
+import Swal from "sweetalert2";
 
 import './style.css';
 import dataAnak from "./data/data";
@@ -32,7 +33,7 @@ const CreatePenimbangan = () => {
     SessionExpired();
     const navigate = useNavigate();
     const [data, setData] = useState([])
-    const { control, handleSubmit, setValue, watch } = useForm();
+    const { control, handleSubmit, setValue, watch, formState: { errors } } = useForm();
     const today = dayjs();
     const [selectedAnak, setSelectedAnak] = useState(null);
     const [isUsiaEnabled, setIsUsiaEnabled] = useState(false);
@@ -99,7 +100,15 @@ const CreatePenimbangan = () => {
 
     const onSubmit = async (data) => {
         const id_kader = localStorage.getItem('id_user');
-
+        if (!selectedAnak || !selectedAnak.nik) {
+            Swal.fire({
+                title: 'Gagal!',
+                text: 'Data anak belum dipilih!',
+                icon: 'error',
+                confirmButtonText: 'Ok'
+            });
+            return; // Prevent form submission
+        }
         try {
             const response = await axios.get(`http://127.0.0.1:8000/api/getPenimbanganByNik/${data.nik_anak}`)
             const bulan_ke = response.data.penimbangan.length;
@@ -126,14 +135,25 @@ const CreatePenimbangan = () => {
                     const nik = data.nik_anak;
 
                     axios.patch(`http://localhost:8000/api/updateUmur/${nik}?umur=${umur}`)
-
-                    // console.log(result.data);
-                    alert('Data berhasil ditambahkan');
-                    navigate('/penimbangan')
+                    //tambahkan swal success
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Data Berhasil Ditambahkan',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                    navigate('/penimbangan');
 
                 })
                 .catch(error => {
                     console.error('Error adding data:', error);
+                    //tambahkan swal error
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Data Gagal Ditambahkan',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
                 });
 
 
@@ -179,7 +199,7 @@ const CreatePenimbangan = () => {
                                                 renderInput={(params) => (
                                                     <TextField
                                                         {...params}
-                                                        label="Search input"
+                                                        label="Cari Anak"
                                                         InputProps={{
                                                             ...params.InputProps,
                                                             type: 'search',
@@ -287,10 +307,16 @@ const CreatePenimbangan = () => {
                                         name="usia"
                                         control={control}
                                         defaultValue=""
-
-                                        render={({ field }) => <TextField fullWidth {...field} label="Usia" variant="outlined" disabled={!isUsiaEnabled} type='number' InputProps={{
-                                            startAdornment: <InputAdornment position="start">bulan</InputAdornment>,
-                                        }} />}
+                                        rules={{
+                                            required: 'Usia harus diisi',
+                                            min: { value: 0, message: 'Usia tidak boleh negatif' }
+                                        }}
+                                        render={({ field }) => <TextField fullWidth {...field} label="Usia" variant="outlined" disabled={!isUsiaEnabled} type='number'
+                                            error={Boolean(errors.usia)}
+                                            helperText={errors.usia && errors.usia.message}
+                                            InputProps={{
+                                                startAdornment: <InputAdornment position="start">bulan</InputAdornment>,
+                                            }} />}
                                     />
                                     <Button
                                         size="small"
@@ -312,9 +338,16 @@ const CreatePenimbangan = () => {
                                         name="berat_badan"
                                         control={control}
                                         defaultValue=""
-                                        render={({ field }) => <TextField fullWidth {...field} label="Berat Badan" variant="outlined" type='number' InputProps={{
-                                            startAdornment: <InputAdornment position="start">kg</InputAdornment>,
-                                        }} />}
+                                        rules={{
+                                            required: 'Berat badan harus diisi',
+                                            min: { value: 0, message: 'Berat badan tidak boleh negatif' }
+                                        }}
+                                        render={({ field }) => <TextField fullWidth {...field} label="Berat Badan" variant="outlined" type='number'
+                                            error={Boolean(errors.berat_badan)}
+                                            helperText={errors.berat_badan && errors.berat_badan.message}
+                                            InputProps={{
+                                                startAdornment: <InputAdornment position="start">kg</InputAdornment>,
+                                            }} />}
                                     />
                                 </Box>
                                 <Box
@@ -327,9 +360,16 @@ const CreatePenimbangan = () => {
                                         name="tinggi_badan"
                                         control={control}
                                         defaultValue=""
-                                        render={({ field }) => <TextField fullWidth {...field} label="Tinggi Badan" variant="outlined" type='number' InputProps={{
-                                            startAdornment: <InputAdornment position="start">cm</InputAdornment>,
-                                        }} />}
+                                        rules={{
+                                            required: 'Tinggi badan harus diisi',
+                                            min: { value: 0, message: 'Tinggi badan tidak boleh negatif' }
+                                        }}
+                                        render={({ field }) => <TextField fullWidth {...field} label="Tinggi Badan" variant="outlined" type='number'
+                                            error={Boolean(errors.tinggi_badan)}
+                                            helperText={errors.tinggi_badan && errors.tinggi_badan.message}
+                                            InputProps={{
+                                                startAdornment: <InputAdornment position="start">cm</InputAdornment>,
+                                            }} />}
                                     />
                                 </Box>
                                 <Box
@@ -342,7 +382,12 @@ const CreatePenimbangan = () => {
                                         name="keterangan"
                                         control={control}
                                         defaultValue=""
-                                        render={({ field }) => <TextField fullWidth {...field} label="Keterangan" variant="outlined" disabled />}
+                                        rules={{
+                                            required: 'Keterangan harus diisi'
+                                        }}
+                                        render={({ field }) => <TextField fullWidth {...field} label="Keterangan" variant="outlined" disabled
+                                            error={Boolean(errors.keterangan)}
+                                            helperText={errors.keterangan && errors.keterangan.message} />}
                                     />
                                     <Button variant="contained" color="success" id="warning-button" onClick={handleCalculateWeightGain}>
                                         Hitung Kenaikan
@@ -358,7 +403,12 @@ const CreatePenimbangan = () => {
                                         name="status_gizi"
                                         control={control}
                                         defaultValue=""
-                                        render={({ field }) => <TextField fullWidth {...field} label="Status Gizi" variant="outlined" />}
+                                        rules={{
+                                            required: 'Status gizi harus diisi'
+                                        }}
+                                        render={({ field }) => <TextField fullWidth {...field} label="Status Gizi" variant="outlined"
+                                            error={Boolean(errors.status_gizi)}
+                                            helperText={errors.status_gizi && errors.status_gizi.message} />}
                                     />
                                     <Button variant="contained" color="success" id="warning-button" onClick={handleCalculateGizi}>
                                         Hitung Status Gizi
@@ -375,6 +425,9 @@ const CreatePenimbangan = () => {
                                         name="saran"
                                         control={control}
                                         defaultValue=""
+                                        rules={{
+                                            required: 'Saran harus diisi'
+                                        }}
                                         render={({ field }) =>
                                             <TextField
                                                 fullWidth
@@ -383,6 +436,8 @@ const CreatePenimbangan = () => {
                                                 multiline
                                                 rows={4}
                                                 {...field}
+                                                error={Boolean(errors.saran)}
+                                                helperText={errors.saran && errors.saran.message}
                                             />}
                                     />
                                 </Box>
